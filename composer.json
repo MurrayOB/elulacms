@@ -9,9 +9,9 @@
   "minimum-stability": "dev",
   "require": {},
   "extra": {
-    "larvel": {
+    "laravel": {
       "providers": [
-        "Murrayobrien\\elulacms\\ElulacmsServiceProvider"
+        "Murrayobrien\\Elulacms\\ElulacmsServiceProvider"
       ]
     }
   }

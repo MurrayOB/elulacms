@@ -2,9 +2,10 @@
 
 namespace Murrayobrien\Elulacms; 
 
-use Illuminate\Support\ServiceProvider; //
+use Illuminate\Support\ServiceProvider; 
 
 class ElulacmsServiceProvider extends ServiceProvider{
+    
     public function boot(){
         dd('It works.'); 
     }
