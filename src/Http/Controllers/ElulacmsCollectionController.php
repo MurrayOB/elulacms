@@ -8,7 +8,16 @@ class ElulacmsCollectionController extends Controller {
 
     //post
     public function addCollection(Request $request){
-        return 'Data sent'; 
+        $request->validate([
+            'collectionName' => 'required|string|max:255'
+        ]); 
+
+        $collectionName = $request->collectionName;
+        $fieldTypes = $request->fieldTypes; 
+
+        dd($fieldTypes); 
+        
+        return "good"; 
     }
 
     //get

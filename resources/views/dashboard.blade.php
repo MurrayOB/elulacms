@@ -8,7 +8,6 @@
         <input type="text" id="collectionName" placeholder="Collection Name">
         <br><br>
         <div id="arrPrint"></div>
-        <br><br>
         <button onclick="addField(event)">Add Field</button>
         <br><br>
         <button onclick="createCollection(event)">Create Collection</button>
@@ -41,10 +40,25 @@
                 desc: "Boolean"
             },
         ];
+        //Empty
+        // let fieldsArray = [{
+        //     title: '',
+        //     id: null
+        // }, ];
         let fieldsArray = [{
-            title: '',
-            id: null
+            title: 'Name',
+            id: 1
+        }, {
+            title: 'Description',
+            id: 2
+        }, {
+            title: 'ProfilePicture',
+            id: 4
+        }, {
+            title: 'Active',
+            id: 6
         }, ];
+
         let jsToHTML = ``;
 
         //Functions
@@ -137,7 +151,7 @@
 
             const url = "/cms/addCollection";
             axios.post(url, data).then(function(response) {
-                console.log(response)
+
             }).catch(function(error) {
 
             });
