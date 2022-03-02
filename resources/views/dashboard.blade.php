@@ -134,21 +134,14 @@
                 collectionName: collectionName.value,
                 fieldTypes: fieldsArray
             }
-            document.getElementById("result").innerHTML = JSON.stringify(data);
 
-            let url = "/cms/addCollection";
+            const url = "/cms/addCollection";
+            axios.post(url, data).then(function(response) {
+                console.log(response)
+            }).catch(function(error) {
 
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", url);
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    console.log(xhr.responseText);
-                }
-            };
+            });
 
-            xhr.send(data);
         }
     </script>
 @endsection

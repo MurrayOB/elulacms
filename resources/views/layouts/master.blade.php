@@ -15,9 +15,8 @@
     </title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-
     <!-- App CSS -->
-    <link rel="stylesheet" href="{{ asset('vendor/elulacms/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/elulacms/assets/css/app.css') }}">
     @stack('css')
     <style>
         body {
@@ -25,8 +24,8 @@
         }
 
     </style>
-    {{-- scripts --}}
-    <script src="{{ asset('vendor/elulacms/js/app.js') }}" defer></script>
+    {{-- js scripts --}}
+    <script src="{{ asset('vendor/elulacms/assets/js/app.js') }}" defer></script>
 </head>
 
 <body>
