@@ -151,9 +151,9 @@
 
             const url = "/cms/addCollection";
             axios.post(url, data).then(function(response) {
-
+                document.getElementById("result").innerHTML = JSON.stringify(response);
             }).catch(function(error) {
-
+                document.getElementById("result").innerHTML = JSON.stringify(error.message);
             });
 
         }
