@@ -4,97 +4,151 @@
     <div style="text-align: center;">
         <h1>Welcome to the Elula CMS Dashboard</h1>
         <p>Create collections, page data and manage CMS users</p>
-        <div style="">
-            <input type="text" placeholder="Collection Name">
-            <br><br>
-            <pre id="arrPrint"></pre>
-            <br><br>
-            <button onclick="addField(event)">Add Field</button>
-            <br><br>
-            <button onclick="createCollection(event)">Create Collection</button>
-            <p id="result"></p>
-        </div>
+        {{-- form --}}
+        <input type="text" id="collectionName" placeholder="Collection Name">
+        <br><br>
+        <div id="arrPrint"></div>
+        <br><br>
+        <button onclick="addField(event)">Add Field</button>
+        <br><br>
+        <button onclick="createCollection(event)">Create Collection</button>
+        <p id="result"></p>
     </div>
     <script>
-        let arr = [{
+        //Variables
+        const fieldTypes = [{
+                id: 1,
+                desc: "Text"
+            },
+            {
+                id: 2,
+                desc: "Rich Text"
+            },
+            {
+                id: 3,
+                desc: "Number"
+            },
+            {
+                id: 4,
+                desc: "Image"
+            },
+            {
+                id: 5,
+                desc: "Date"
+            },
+            {
+                id: 6,
+                desc: "Boolean"
+            },
+        ];
+        let fieldsArray = [{
             title: '',
-            id: 0
+            id: null
         }, ];
         let jsToHTML = ``;
 
+        //Functions
         document.onload = onLoad();
 
         function onLoad() {
-            arr.forEach(function(el, index) {
-                jsToHTML = jsToHTML + `<input type="text" placeholder="Field Name" onchange="updateArray(event, ${index})" id="field-${index}" value="${el.title}"> <select onchange="updateArrayFromSelect(event, ${index})" name="" id="">
-                <option default selected>Select Type</option>
-                <option value="0">Text</option>
-                <option value="1">Rich Text</option>
-                <option value="2">Number</option>
-                <option value="3">Image</option>
-                <option value="4">Date</option>
-                <option value="5">Boolean</option>
-            </select> <br /><br />`
+            fieldsArray.forEach(function(el, index) {
+                jsToHTML = jsToHTML + `<input type="text" placeholder="Field Name" onchange="updateArray(event, ${index})" id="field-${index}" value="${el.title}"><select onchange="updateArrayFromSelect(event, ${index})" name="" id="">
+                <option default selected>Select Type</option>` + getFieldTypes() +
+                    `</select><button onclick="removeField(${index})">remove</button> <br /><br />`
             });
             document.getElementById("arrPrint").innerHTML = jsToHTML;
         }
 
+        function getFieldTypes() {
+            let types = ``;
+            fieldTypes.forEach(function(el) {
+                types = types + `<option value="${el.id}">${el.desc}</option>`
+            });
+            return types;
+        }
+
+        //onchange inputs
         function updateArray(e, fieldIndex) {
-            arr.forEach(function(el, index) {
+            fieldsArray.forEach(function(el, index) {
                 if (fieldIndex === index) {
-                    arr[index].title = e.target.value;
+                    fieldsArray[index].title = e.target.value;
                 }
             });
-            console.log(JSON.stringify(arr))
         }
 
+        //onchange selects
         function updateArrayFromSelect(e, selectIndex) {
-            console.log(selectIndex + e.target.value);
-            arr[selectIndex].id = parseInt(e.target.value);
+            fieldsArray[selectIndex].id = parseInt(e.target.value);
         }
 
+        function removeField(index) {
+            fieldsArray.splice(index, 1)
+            updateState();
+        }
+
+        //Add new field
         function addField(e) {
             e.preventDefault();
-
-            arr.push({
-                title: 'test3',
-                id: -1
+            fieldsArray.push({
+                title: '',
+                id: null
             })
+            updateState();
+        }
 
+        function updateState() {
+            //Update HTML
             jsToHTML = ``;
-            arr.forEach(function(el, index) {
+            fieldsArray.forEach(function(el, index) {
                 jsToHTML = jsToHTML +
                     `<input type="text" placeholder="Field Name" value="${el.title}" onchange="updateArray(event, ${index})" id="field-${index}">`;
-                if (el.id < 0) {
-                    jsToHTML = jsToHTML + `<select name="" id="">
-                <option default selected>Select Type</option>
-                <option value="0">Text</option>
-                <option value="1">Rich Text</option>
-                <option value="2">Number</option>
-                <option value="3">Image</option>
-                <option value="4">Date</option>
-                <option value="5">Boolean</option>
-            </select> <br /><br />`;
-                } else {
-                    jsToHTML = jsToHTML + `<select name="" id="">
-                <option selected value="${el.id}">Text</option>
-                <option value="0">Text</option>
-                <option value="1">Rich Text</option>
-                <option value="2">Number</option>
-                <option value="3">Image</option>
-                <option value="4">Date</option>
-                <option value="5">Boolean</option>
-            </select> <br /><br />`
+                if (el.id == null) {
+                    jsToHTML = jsToHTML +
+                        `<select onchange="updateArrayFromSelect(event, ${index})" name="" id=""><option selected>Select Type</option>` +
+                        getFieldTypes() +
+                        `</select><button onclick="removeField(${index})">remove</button> <br /><br />`;
                 }
 
+                if (el.id !== null) {
+                    jsToHTML = jsToHTML +
+                        `<select onchange="updateArrayFromSelect(event, ${index})" name="" id=""><option selected value="${el.id}">${getFieldDescById(el.id)}</option>` +
+                        getFieldTypes() +
+                        `</select><button onclick="removeField(${index})">remove</button><br /><br />`;
+                }
             });
-            document.getElementById("arrPrint").innerHTML = jsToHTML;
 
+            document.getElementById("arrPrint").innerHTML = jsToHTML;
+        }
+
+        function getFieldDescById(id) {
+            let desc = '';
+            fieldTypes.forEach(function(el) {
+                el.id == id ? desc = el.desc : '';
+            });
+            return desc;
         }
 
         function createCollection(e) {
-            e.preventDefault();
-            document.getElementById("result").innerHTML = JSON.stringify(arr)
+            const collectionName = document.querySelector('#collectionName');
+            const data = {
+                collectionName: collectionName.value,
+                fieldTypes: fieldsArray
+            }
+            document.getElementById("result").innerHTML = JSON.stringify(data);
+
+            let url = "/cms/addCollection";
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    console.log(xhr.responseText);
+                }
+            };
+
+            xhr.send(data);
         }
     </script>
 @endsection
