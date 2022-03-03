@@ -3,9 +3,6 @@
 namespace Murrayobrien\Elulacms\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint; 
 
 use Murrayobrien\Elulacms\Helpers\CollectionHelper; 
 
@@ -23,17 +20,12 @@ class ElulacmsCollectionController extends Controller {
         // $request->validate([
         //     'collectionName' => 'required|string|max:255'
         // ]); 
-
         $collectionName = $request->collectionName;
         $fieldTypes = $request->fieldTypes; 
 
-        Schema::create('elulacms_'.$collectionName, function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        //Artisan::call('migrate');
+        //Add collection from Helper class
+        $collectionHelper = new CollectionHelper(); 
+        $collectionHelper->createCollection($collectionName, $fieldTypes); 
     }
 
     //get
