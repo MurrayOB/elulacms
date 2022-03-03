@@ -17,15 +17,16 @@ class ElulacmsCollectionController extends Controller {
     //post
     public function addCollection(Request $request){
         //Validation
-        // $request->validate([
-        //     'collectionName' => 'required|string|max:255'
-        // ]); 
+        $request->validate([
+            'collectionName' => 'required|string|max:255', 
+        ]); 
+
         $collectionName = $request->collectionName;
         $fieldTypes = $request->fieldTypes; 
 
         //Add collection from Helper class
         $collectionHelper = new CollectionHelper(); 
-        $collectionHelper->createCollection($collectionName, $fieldTypes); 
+        return $collectionHelper->createCollection($collectionName, $fieldTypes); 
     }
 
     //get
@@ -33,7 +34,7 @@ class ElulacmsCollectionController extends Controller {
      * call a function that returns the data so that it can be used in both this api controller and 
      * from a return View(data...) etc. 
      */
-    public function getCollection(){
+    public function getCollections(){
         return 'All Collections'; 
     }
 

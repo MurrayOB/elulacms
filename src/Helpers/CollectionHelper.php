@@ -7,19 +7,13 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint; 
 
 class CollectionHelper {
-    //Artisan::call('migrate');
 
-    //Field Types: 
-    // id: 1. text -> string()
-    // id: 2. rich text -> longText()
-    // id: 3. number -> integer()
-    // id: 4. image -> string('') (file path is saved)
-    // id: 5. date -> date('')
-    // id: 6. boolean -> boolean()
     function createCollection(string $collectionName, $fieldArray){
         if (Schema::hasTable('elulacms_'.strtolower($collectionName)))
         {
-            return response('Collection name already exists', 200); 
+            return response()->json([
+                'message' => 'Collection name already exists'
+            ]); 
         }
 
         //Add to DB
@@ -31,12 +25,25 @@ class CollectionHelper {
             }
             $table->timestamps();
         });
+
+        //Artisan::call('make:model', ['name' => 'test']); 
+        return response()->json([
+            'message' => 'Successfully created collection'
+        ]); 
+    }
+
+    
+    function getAllCollections(){
+        
+    }
+    
+    function getCollectionDataByName(string $collectionName){
+        
     }
 
     private function getTableType(Blueprint $table, $value){
         $lowerCaseVal = strtolower($value['title']); 
-
-        switch($value){
+        switch($value['id']){
             case 1:
                 return $table->string($lowerCaseVal); 
                 break;
@@ -55,18 +62,6 @@ class CollectionHelper {
             case 6:
                 return $table->boolean($lowerCaseVal); 
                 break;
-            default: 
-                return null;
         }
-
-        
-    }
-
-    function getAllCollections(){
-
-    }
-
-    function getCollectionByName(){
-        
     }
 }

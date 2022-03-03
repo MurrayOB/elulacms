@@ -12,9 +12,16 @@ class ElulacmsServiceProvider extends ServiceProvider{
         //Views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'elulacms');
         //Public
+        // __DIR__.'/../public/config/' => config_path('vendor/elulacms'),
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/elulacms'),
         ], 'public');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Commands\InstallCommand::class,
+            ]);
+        }
     }
 
     public function register(){

@@ -41,22 +41,9 @@
             },
         ];
         //Empty
-        // let fieldsArray = [{
-        //     title: '',
-        //     id: null
-        // }, ];
         let fieldsArray = [{
-            title: 'Name',
-            id: 1
-        }, {
-            title: 'Description',
-            id: 2
-        }, {
-            title: 'ProfilePicture',
-            id: 4
-        }, {
-            title: 'Active',
-            id: 6
+            title: '',
+            id: null
         }, ];
 
         let jsToHTML = ``;
@@ -151,11 +138,10 @@
 
             const url = "/cms/addCollection";
             axios.post(url, data).then(function(response) {
-                document.getElementById("result").innerHTML = JSON.stringify(response.message);
+                document.getElementById("result").innerHTML = JSON.stringify(response.data.message);
             }).catch(function(error) {
-                document.getElementById("result").innerHTML = JSON.stringify(error.message);
+                document.getElementById("result").innerHTML = JSON.stringify(error.data.message);
             });
-
         }
     </script>
 @endsection
