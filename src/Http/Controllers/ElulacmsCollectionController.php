@@ -30,12 +30,9 @@ class ElulacmsCollectionController extends Controller {
     }
 
     //get
-    /**
-     * call a function that returns the data so that it can be used in both this api controller and 
-     * from a return View(data...) etc. 
-     */
     public function getCollections(){
-        return 'All Collections'; 
+        $collectionHelper = new CollectionHelper(); 
+        return $collectionHelper->getAllCollections(); 
     }
 
     public function getCollectionDataByName($collectionName){

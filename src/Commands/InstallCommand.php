@@ -38,11 +38,11 @@ class InstallCommand extends Command{
         // Publish assets
         //php artisan vendor:publish --tag=public --force
         $this->info('Publishing assets and config files');
-        $this->call('vendor:publish', ['--provider' => ElulacmsServiceProvider::class, '--tag' => 'public']);
+        $this->call('vendor:publish', ['--provider' => ElulacmsServiceProvider::class, '--tag' => 'public', '--force' => true]);
 
         //Migrations
         $this->info('Migrating database tables');
-        $this->call('migrate', ['--force' => $this->option('force')]);
+        $this->call('migrate', ['--force' => true]);
 
         //Dumping AutoLoads
         $this->info('Dumping autoload files');

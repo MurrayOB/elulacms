@@ -1,19 +1,28 @@
 @extends('elulacms::layouts.master')
 @section('title', 'Dashboard')
 @section('content')
-    <div style="text-align: center;">
-        <h1>Welcome to the Elula CMS Dashboard</h1>
-        <p>Create collections, page data and manage CMS users</p>
-        {{-- form --}}
-        <input type="text" id="collectionName" placeholder="Collection Name">
-        <br><br>
-        <div id="arrPrint"></div>
-        <button onclick="addField(event)">Add Field</button>
-        <br><br>
-        <button onclick="createCollection(event)">Create Collection</button>
-        <p id="result"></p>
+    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column">
+            <h1>Collections</h1>
+            <p id="collections"></p>
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+            <h1>Welcome to the Elula CMS Dashboard</h1>
+            <p>Create collections, page data and manage CMS users</p>
+            {{-- form --}}
+            <input type="text" id="collectionName" placeholder="Collection Name">
+            <br><br>
+            <div id="arrPrint"></div>
+            <button onclick="addField(event)">Add Field</button>
+            <br><br>
+            <button onclick="createCollection(event)">Create Collection</button>
+            <p id="result"></p>
+        </div>
+        <div style="display: flex; flex-direction: column">
+
+        </div>
     </div>
-    <script>
+    <script defer>
         //Variables
         const fieldTypes = [{
                 id: 1,
@@ -58,7 +67,19 @@
                     `</select><button onclick="removeField(${index})">remove</button> <br /><br />`
             });
             document.getElementById("arrPrint").innerHTML = jsToHTML;
+            //Load Collections
+            setTimeout(function() {
+                const url = '/cms/getCollections';
+                axios.get(url).then(function(response) {
+                    document.getElementById("collections").innerHTML = JSON.stringify(response.data
+                        .collections);
+                }).catch(function(error) {
+                    document.getElementById("collections").innerHTML = error;
+                });
+            }, 10);
         }
+
+        function loadCollections() {}
 
         function getFieldTypes() {
             let types = ``;
@@ -70,6 +91,7 @@
 
         //onchange inputs
         function updateArray(e, fieldIndex) {
+            loadCollections();
             fieldsArray.forEach(function(el, index) {
                 if (fieldIndex === index) {
                     fieldsArray[index].title = e.target.value;

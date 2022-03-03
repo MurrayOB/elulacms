@@ -9,7 +9,9 @@ use Illuminate\Database\Schema\Blueprint;
 class CollectionHelper {
 
     function createCollection(string $collectionName, $fieldArray){
-        if (Schema::hasTable('elulacms_'.strtolower($collectionName)))
+        $tableName = 'elulacms_'.strtolower($collectionName); 
+
+        if (Schema::hasTable($tableName))
         {
             return response()->json([
                 'message' => 'Collection name already exists'
@@ -17,7 +19,7 @@ class CollectionHelper {
         }
 
         //Add to DB
-        Schema::create('elulacms_'.strtolower($collectionName), function (Blueprint $table) use ($fieldArray) {
+        Schema::create($tableName, function (Blueprint $table) use ($fieldArray) {
             $table->increments('id');
             //Dynamically Add Values
             foreach($fieldArray as $value){
@@ -25,6 +27,11 @@ class CollectionHelper {
             }
             $table->timestamps();
         });
+ 
+        //Add to collections records
+        DB::table('elula_collections')->insert([
+            'collection_name' => $tableName
+        ]);
 
         //Artisan::call('make:model', ['name' => 'test']); 
         return response()->json([
@@ -34,7 +41,18 @@ class CollectionHelper {
 
     
     function getAllCollections(){
+        $collections = DB::table('elula_collections')
+                        ->select('collection_name')
+                        ->get(); 
         
+        $newCollectionsArray = array(); 
+        foreach($collections as $value){
+            array_push($newCollectionsArray, substr($value->collection_name, 9)); 
+        }
+
+        return response()->json([
+            'collections' => $newCollectionsArray
+        ]); 
     }
     
     function getCollectionDataByName(string $collectionName){

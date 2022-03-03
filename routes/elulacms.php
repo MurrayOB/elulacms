@@ -22,4 +22,5 @@ Route::get('/cms/dashboard', function(){
  * API Routes
  */
 Route::post('/cms/addCollection', [ElulacmsCollectionController::class, 'addCollection']); 
+Route::get('/cms/getCollections', [ElulacmsCollectionController::class, 'getCollections']); 
 
