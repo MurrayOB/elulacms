@@ -1,9 +1,11 @@
 @extends('elulacms::layouts.master')
 @section('title', 'Dashboard')
 @section('content')
+    <style>
+    </style>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="display: flex; flex-direction: column">
-            <h1>Collections</h1>
+            <h1 class="mytitle">Collections</h1>
             <p id="collections"></p>
         </div>
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
@@ -17,12 +19,21 @@
             <br><br>
             <button onclick="createCollection(event)">Create Collection</button>
             <p id="result"></p>
+            <!-- Collection Modal -->
+            <button onclick="openCollectionModal()">Click</button>
+            <div id="collectionModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span onclick="closeCollectionModal()" class="custom-modal-close">&times;</span>
+                    <p>Some text in the Modal..</p>
+                </div>
+            </div>
         </div>
         <div style="display: flex; flex-direction: column">
-
+            <img class="mt-1 mr-2 cursor-p" style="height: 30px"
+                src="https://img.icons8.com/ios-filled/50/000000/settings.png" />
         </div>
     </div>
-    <script defer>
+    <script>
         //Variables
         const fieldTypes = [{
                 id: 1,
@@ -49,42 +60,57 @@
                 desc: "Boolean"
             },
         ];
-        //Empty
+
         let fieldsArray = [{
             title: '',
             id: null
         }, ];
 
         let jsToHTML = ``;
+        const collectionModal = document.getElementById("collectionModal");
 
-        //Functions
-        document.onload = onLoad();
+        window.addEventListener('load', function() {
+            createEmptyField();
+            loadCollections();
+        });
 
-        function onLoad() {
-            fieldsArray.forEach(function(el, index) {
-                jsToHTML = jsToHTML + `<input type="text" placeholder="Field Name" onchange="updateArray(event, ${index})" id="field-${index}" value="${el.title}"><select onchange="updateArrayFromSelect(event, ${index})" name="" id="">
+        function createEmptyField() {
+            // fieldsArray.forEach(function(el, index) {
+            //     jsToHTML = jsToHTML + `<input type="text" placeholder="Field Name" onchange="updateArray(event, ${index})" id="field-${index}" value="${el.title}"><select onchange="updateArrayFromSelect(event, ${index})" name="" id="">
+        //     <option default selected>Select Type</option>` + getFieldTypes() +
+            //         `</select><button onclick="removeField(${index})">remove</button> <br /><br />`
+            // });
+            document.getElementById("arrPrint").innerHTML = `<input type="text" placeholder="Field Name" onchange="updateArray(event, 0)" id="field-0" value=""><select onchange="updateArrayFromSelect(event, 0)" name="" id="">
                 <option default selected>Select Type</option>` + getFieldTypes() +
-                    `</select><button onclick="removeField(${index})">remove</button> <br /><br />`
-            });
-            document.getElementById("arrPrint").innerHTML = jsToHTML;
-            //Load Collections
-            setTimeout(function() {
-                const url = '/cms/getCollections';
-                axios.get(url).then(function(response) {
-                    document.getElementById("collections").innerHTML = JSON.stringify(response.data
-                        .collections);
-                }).catch(function(error) {
-                    document.getElementById("collections").innerHTML = error;
-                });
-            }, 10);
+                `</select><button onclick="removeField(0)">remove</button> <br /><br />`;
         }
 
-        function loadCollections() {}
+        function loadCollections() {
+            const url = '/cms/getCollections';
+            axios.get(url).then(function(response) {
+                handleCollections(response.data.collections);
+            }).catch(function(error) {
+                document.getElementById("collections").innerHTML = error;
+            });
+        }
+
+        function handleCollections(collections) {
+            if (collections.length == 0) {
+                document.getElementById("collections").innerHTML = 'You dont have any collections';
+                return;
+            }
+
+            let collectionPrint = '';
+            collections.forEach(function(el) {
+                collectionPrint += `<button>View ${el.name}</button><br/><br/>`;
+            });
+            document.getElementById("collections").innerHTML = collectionPrint;
+        }
 
         function getFieldTypes() {
             let types = ``;
             fieldTypes.forEach(function(el) {
-                types = types + `<option value="${el.id}">${el.desc}</option>`
+                types += `<option value="${el.id}">${el.desc}</option>`
             });
             return types;
         }
@@ -123,10 +149,10 @@
             //Update HTML
             jsToHTML = ``;
             fieldsArray.forEach(function(el, index) {
-                jsToHTML = jsToHTML +
+                jsToHTML +=
                     `<input type="text" placeholder="Field Name" value="${el.title}" onchange="updateArray(event, ${index})" id="field-${index}">`;
                 if (el.id == null) {
-                    jsToHTML = jsToHTML +
+                    jsToHTML +=
                         `<select onchange="updateArrayFromSelect(event, ${index})" name="" id=""><option selected>Select Type</option>` +
                         getFieldTypes() +
                         `</select><button onclick="removeField(${index})">remove</button> <br /><br />`;
@@ -161,9 +187,20 @@
             const url = "/cms/addCollection";
             axios.post(url, data).then(function(response) {
                 document.getElementById("result").innerHTML = JSON.stringify(response.data.message);
+                createEmptyField();
+                loadCollections();
+                document.getElementById("collectionName").value = '';
             }).catch(function(error) {
                 document.getElementById("result").innerHTML = JSON.stringify(error.data.message);
             });
+        }
+
+        openCollectionModal = () => {
+            collectionModal.style.display = "block";
+        }
+
+        closeCollectionModal = () => {
+            collectionModal.style.display = "none";
         }
     </script>
 @endsection

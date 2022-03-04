@@ -47,10 +47,13 @@ class CollectionHelper {
         
         $newCollectionsArray = array(); 
         foreach($collections as $value){
-            array_push($newCollectionsArray, substr($value->collection_name, 9)); 
+            array_push($newCollectionsArray, ['name' => substr($value->collection_name, 9)]); 
         }
 
+        $message = ''; 
+
         return response()->json([
+            'message' => $message, 
             'collections' => $newCollectionsArray
         ]); 
     }

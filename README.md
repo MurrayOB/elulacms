@@ -12,6 +12,9 @@ so that it can be passed return view('example')->with('collectionName', $collect
 3. Allow to delete a collection
 4. Return a specific collections data (getCollectionDataByName)
 
+Commands:
+php artisan vendor:publish --tag=public --force
+
 Docs:
 
 Schema:
