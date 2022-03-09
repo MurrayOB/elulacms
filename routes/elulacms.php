@@ -23,4 +23,5 @@ Route::get('/cms/dashboard', function(){
  */
 Route::post('/cms/addCollection', [ElulacmsCollectionController::class, 'addCollection']); 
 Route::get('/cms/getCollections', [ElulacmsCollectionController::class, 'getCollections']); 
+Route::post('/cms/deleteCollection', [ElulacmsCollectionController::class, 'deleteCollection']); 
 

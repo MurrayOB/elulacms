@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint; 
 
+//This class is intended to be used by
+//1. The front-end of the Cms 
+//2. The CMS api controller
+
 class CollectionHelper {
 
     function createCollection(string $collectionName, $fieldArray){
@@ -18,7 +22,7 @@ class CollectionHelper {
             ]); 
         }
 
-        //Add to DB
+        //Create collection table
         Schema::create($tableName, function (Blueprint $table) use ($fieldArray) {
             $table->increments('id');
             //Dynamically Add Values
@@ -28,10 +32,17 @@ class CollectionHelper {
             $table->timestamps();
         });
  
-        //Add to collections records
-        DB::table('elula_collections')->insert([
+        //Store Collection name
+        $collectionID = DB::table('elula_collections')->insertGetId([
             'collection_name' => $tableName
         ]);
+
+        //Store collection fields
+        $newArray = array(); 
+        foreach($fieldArray as $value){
+            array_push($newArray, ['name' => $value['title'], 'type' => $value['id'], 'collection_id' => $collectionID]); 
+        }
+        DB::table('elula_collections_fields')->insert($newArray); 
 
         //Artisan::call('make:model', ['name' => 'test']); 
         return response()->json([
@@ -39,27 +50,38 @@ class CollectionHelper {
         ]); 
     }
 
-    
     function getAllCollections(){
-        $collections = DB::table('elula_collections')
-                        ->select('collection_name')
+        //Get Collections Names
+        $collectionNames = DB::table('elula_collections')
+                        ->select('id','collection_name')
                         ->get(); 
-        
-        $newCollectionsArray = array(); 
-        foreach($collections as $value){
-            array_push($newCollectionsArray, ['name' => substr($value->collection_name, 9)]); 
+        // Get Collections Fields from elula_collections_fields
+        $collections = array(); 
+        foreach($collectionNames as $value){
+            $fields = DB::table('elula_collections_fields')
+                        ->select('name','type')
+                        ->where('collection_id', $value->id) 
+                        ->get(); 
+            $data = DB::table($value->collection_name)
+                        ->get(); 
+            array_push($collections, ['id' => $value->id, 'name' => substr($value->collection_name, 9), 'fields' => $fields, 'data' => $data]); 
         }
-
-        $message = ''; 
-
-        return response()->json([
-            'message' => $message, 
-            'collections' => $newCollectionsArray
-        ]); 
+        return $collections; 
     }
     
+    //Have an option
+    //For api calls
+    //Or get Model calls
+    //localhost:8000/getCollectionDataByName=?ids&?columnsOnly
     function getCollectionDataByName(string $collectionName){
         
+    }
+
+    function deleteCollectionById($id){
+        $tableName = DB::table('elula_collections')->select('collection_name')->where('id', $id)->first(); 
+        DB::table('elula_collections')->where('id', $id)->delete(); 
+        Schema::drop($tableName->collection_name); 
+        return true; 
     }
 
     private function getTableType(Blueprint $table, $value){

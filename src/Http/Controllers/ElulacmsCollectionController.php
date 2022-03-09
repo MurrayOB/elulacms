@@ -32,11 +32,24 @@ class ElulacmsCollectionController extends Controller {
     //get
     public function getCollections(){
         $collectionHelper = new CollectionHelper(); 
-        return $collectionHelper->getAllCollections(); 
+        $collections = $collectionHelper->getAllCollections(); 
+        $message = 'Succcessfully fetched all collections.'; 
+        return response()->json([
+            'message' => $message, 
+            'collections' => $collections
+        ]); 
     }
 
     public function getCollectionDataByName($collectionName){
         $name = 'elulacms_'.$collectionName; 
         //Search DB for table data
+    }
+
+    public function deleteCollection(Request $request){
+        $collectionHelper = new CollectionHelper(); 
+        $response = $collectionHelper->deleteCollectionById($request->id); 
+        return response()->json([
+            'success' => $response
+        ]); 
     }
 }

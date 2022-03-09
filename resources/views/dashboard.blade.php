@@ -2,6 +2,23 @@
 @section('title', 'Dashboard')
 @section('content')
     <style>
+        td {
+            border: 1px solid rgb(87, 87, 87);
+        }
+
+        th,
+        td {
+            padding: 5px;
+        }
+
+        .publish-btn {
+            text-align: center;
+        }
+
+        .greater-z {
+            z-index: 10 !important;
+        }
+
     </style>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="display: flex; flex-direction: column">
@@ -19,12 +36,20 @@
             <br><br>
             <button onclick="createCollection(event)">Create Collection</button>
             <p id="result"></p>
-            <!-- Collection Modal -->
-            <button onclick="openCollectionModal()">Click</button>
-            <div id="collectionModal" class="custom-modal">
+            {{-- Add Entry --}}
+            <div id="addEntryModal" class="custom-modal">
                 <div class="custom-modal-content">
-                    <span onclick="closeCollectionModal()" class="custom-modal-close">&times;</span>
-                    <p>Some text in the Modal..</p>
+                    <span onclick="closeModals()" class="custom-modal-close">&times;</span>
+                    <button onclick="backBtn()">back</button>
+                    <br>
+                    <div id="addEntryModalData"></div>
+                </div>
+            </div>
+            <!-- Collection Modal -->
+            <div id="collectionModal" class="custom-modal greater-z">
+                <div class="custom-modal-content">
+                    <span onclick="closeModals()" class="custom-modal-close">&times;</span>
+                    <div id="collectionData"></div>
                 </div>
             </div>
         </div>
@@ -34,7 +59,12 @@
         </div>
     </div>
     <script>
-        //Variables
+        ////////////////////////////////////////////////////////////
+        //Global Variables
+        ////////////////////////////////////////////////////////////
+        const collectionModal = document.getElementById("collectionModal");
+        const addEntryModal = document.getElementById("addEntryModal");
+
         const fieldTypes = [{
                 id: 1,
                 desc: "Text"
@@ -67,24 +97,22 @@
         }, ];
 
         let jsToHTML = ``;
-        const collectionModal = document.getElementById("collectionModal");
+        let globalCollections = [];
+        let $globalSelectedCollection = null;
+        let $globalAddEntryArray = [];
+
+        ////////////////////////////////////////////////////////////
+        //On Load
+        ////////////////////////////////////////////////////////////
 
         window.addEventListener('load', function() {
             createEmptyField();
             loadCollections();
         });
 
-        function createEmptyField() {
-            // fieldsArray.forEach(function(el, index) {
-            //     jsToHTML = jsToHTML + `<input type="text" placeholder="Field Name" onchange="updateArray(event, ${index})" id="field-${index}" value="${el.title}"><select onchange="updateArrayFromSelect(event, ${index})" name="" id="">
-        //     <option default selected>Select Type</option>` + getFieldTypes() +
-            //         `</select><button onclick="removeField(${index})">remove</button> <br /><br />`
-            // });
-            document.getElementById("arrPrint").innerHTML = `<input type="text" placeholder="Field Name" onchange="updateArray(event, 0)" id="field-0" value=""><select onchange="updateArrayFromSelect(event, 0)" name="" id="">
-                <option default selected>Select Type</option>` + getFieldTypes() +
-                `</select><button onclick="removeField(0)">remove</button> <br /><br />`;
-        }
-
+        ////////////////////////////////////////////////////////////
+        //Load Collections
+        ////////////////////////////////////////////////////////////
         function loadCollections() {
             const url = '/cms/getCollections';
             axios.get(url).then(function(response) {
@@ -101,10 +129,22 @@
             }
 
             let collectionPrint = '';
+            globalCollections = collections;
+            console.log(globalCollections);
             collections.forEach(function(el) {
-                collectionPrint += `<button>View ${el.name}</button><br/><br/>`;
+                collectionPrint +=
+                    `<button onclick="openCollectionModal('${el.name}')">View ${el.name}</button><br/><br/>`;
             });
             document.getElementById("collections").innerHTML = collectionPrint;
+        }
+
+        ////////////////////////////////////////////////////////////
+        //Create Collection Form
+        ////////////////////////////////////////////////////////////
+        function createEmptyField() {
+            document.getElementById("arrPrint").innerHTML = `<input type="text" placeholder="Field Name" onchange="updateArray(event, 0)" id="field-0" value=""><select onchange="updateArrayFromSelect(event, 0)" name="" id="">
+                <option default selected>Select Type</option>` + getFieldTypes() +
+                `</select><button onclick="removeField(0)">remove</button> <br /><br />`;
         }
 
         function getFieldTypes() {
@@ -115,9 +155,8 @@
             return types;
         }
 
-        //onchange inputs
         function updateArray(e, fieldIndex) {
-            loadCollections();
+            //loadCollections();
             fieldsArray.forEach(function(el, index) {
                 if (fieldIndex === index) {
                     fieldsArray[index].title = e.target.value;
@@ -125,7 +164,6 @@
             });
         }
 
-        //onchange selects
         function updateArrayFromSelect(e, selectIndex) {
             fieldsArray[selectIndex].id = parseInt(e.target.value);
         }
@@ -135,7 +173,6 @@
             updateState();
         }
 
-        //Add new field
         function addField(e) {
             e.preventDefault();
             fieldsArray.push({
@@ -195,12 +232,113 @@
             });
         }
 
-        openCollectionModal = () => {
+        ////////////////////////////////////////////////////////////
+        //Collection Modal
+        ////////////////////////////////////////////////////////////
+        openCollectionModal = (collectionName) => {
+            collectionModal.style.display = "block";
+            let singleCollection = globalCollections.filter(function(el) {
+                return el.name == collectionName;
+            });
+            singleCollection = singleCollection[0];
+            $globalSelectedCollection = singleCollection;
+            let actions =
+                `<button onclick="editCollection()">Edit Collection</button> <button onclick="deleteCollection(${singleCollection.id})">Delete Collection</button>
+            <button onclick="addEntryForm()" style="float: right">Add Entry +</button>`;
+            let innerHTMLCollection =
+                `<h2>${singleCollection.name}</h2>${actions}<br>`;
+            let columns = '';
+            let data = '';
+            let keys = singleCollection.data[0];
+            for (const key in keys) {
+                columns += `<th>${key}</th>`;
+            }
+            columns += '<th>Status</th>';
+            singleCollection.data.forEach(function(el, index) {
+                let temp = '<tr>';
+                for (const key in el) {
+                    temp += `<td>${el[key]}</td>`;
+                }
+                temp +=
+                    '<td class="publish-btn"><button>publish</button></td><td><button>edit</button></td><td><button>delete</button></td></tr>';
+                data += temp;
+            });
+            let table =
+                `<table style="width:100%"><tr>${columns}</tr>${data}</table>`;
+            innerHTMLCollection += `<br>${table}`;
+            document.getElementById("collectionData").innerHTML = `<p>${innerHTMLCollection}</p>`;
+        }
+
+        function deleteCollection(collectionId) {
+            axios.post('/cms/deleteCollection', {
+                id: collectionId
+            }).then(function(res) {
+                if (res) {
+                    loadCollections();
+                    closeModals();
+                }
+            }).catch(function(error) {
+                console.log(error);
+            });
+        }
+
+        ////////////////////////////////////////////////////////////
+        //Edit Collection Modal
+        ////////////////////////////////////////////////////////////
+        function editCollection() {}
+
+        ////////////////////////////////////////////////////////////
+        //Add Entry Modal
+        ////////////////////////////////////////////////////////////
+        function addEntryForm() {
+            let entryForm = `<h2>${$globalSelectedCollection.name}</h2>`;
+            addEntryModal.style.display = "block";
+            collectionModal.style.display = "none";
+
+            $globalSelectedCollection.fields.forEach(function(el, index) {
+                entryForm += returnInputType(el.name, el.type, index);
+            });
+
+            entryForm += '<button onclick="addEntry()">Add Entry</button>'
+            document.getElementById("addEntryModalData").innerHTML = entryForm;
+        }
+
+        function returnInputType(name, type, index) {
+            $globalAddEntryArray.push({
+                columnName: name,
+                value: null
+            });
+            if (type == 1) {
+                return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
+            }
+        }
+
+        function updateEntryInput(e, fieldIndex) {
+            $globalAddEntryArray.forEach(function(el, index) {
+                if (fieldIndex === index) {
+                    $globalAddEntryArray[index].value = e.target.value;
+                }
+            });
+        }
+
+        function addEntry() {
+            console.log($globalAddEntryArray);
+            //if success
+            addEntryModal.style.display = "none";
+            openCollectionModal($globalSelectedCollection.name);
+        }
+
+        function backBtn() {
+            addEntryModal.style.display = "none";
             collectionModal.style.display = "block";
         }
 
-        closeCollectionModal = () => {
+        ////////////////////////////////////////////////////////////
+        //All Modals
+        ////////////////////////////////////////////////////////////
+        closeModals = () => {
             collectionModal.style.display = "none";
+            addEntryModal.style.display = "none";
         }
     </script>
 @endsection
