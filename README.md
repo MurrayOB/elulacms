@@ -1,5 +1,12 @@
 To DO:
 
+Up and coming: 
+
+1. Newsletter
+2. Whitelabeling 
+3. Emailing 
+4. Drag and drop UI building 
+
 TOP PRIORITY:
 
 1. Create add entry endpoint
