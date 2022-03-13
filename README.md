@@ -5,7 +5,9 @@ TOP PRIORITY:
 1. Create add entry endpoint
 2. Build section for editing the column types
 3. Add publish/ unpublish ability
-4. Add image processing ability
+4. Able to add images into the cms / collections
+5. User Roles settings
+6. User roles
 
 Thoughts:
 
@@ -24,6 +26,8 @@ so that it can be passed return view('example')->with('collectionName', $collect
 
 Commands:
 php artisan vendor:publish --tag=public --force
+php artisan cache:clear
+php artisan config:clear
 
 Docs:
 

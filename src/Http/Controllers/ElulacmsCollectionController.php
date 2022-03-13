@@ -8,13 +8,7 @@ use Murrayobrien\Elulacms\Helpers\CollectionHelper;
 
 class ElulacmsCollectionController extends Controller {
 
-    /**
-     * Ideas :
-     *      1. Create a table called elulacms_collectionName
-     *      2. Create a model called 
-     */
-
-    //post
+    
     public function addCollection(Request $request){
         //Validation
         $request->validate([
@@ -29,7 +23,6 @@ class ElulacmsCollectionController extends Controller {
         return $collectionHelper->createCollection($collectionName, $fieldTypes); 
     }
 
-    //get
     public function getCollections(){
         $collectionHelper = new CollectionHelper(); 
         $collections = $collectionHelper->getAllCollections(); 
@@ -48,6 +41,14 @@ class ElulacmsCollectionController extends Controller {
     public function deleteCollection(Request $request){
         $collectionHelper = new CollectionHelper(); 
         $response = $collectionHelper->deleteCollectionById($request->id); 
+        return response()->json([
+            'success' => $response
+        ]); 
+    }
+
+    public function addEntry(Request $request){
+        $collectionHelper = new CollectionHelper(); 
+        $response = $collectionHelper->addEntry($request->collectionName, $request->formData); 
         return response()->json([
             'success' => $response
         ]); 

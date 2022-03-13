@@ -77,6 +77,19 @@ class CollectionHelper {
         
     }
 
+    function addEntry($collectionName, $formData){
+        $tableName = 'elulacms_'.strtolower($collectionName); 
+        $entryArray = array(); 
+        $columns = ''; 
+        $values = ''; 
+        foreach($formData as $value){
+            $collumns += $value['columnsName'] . ','; 
+        }
+        
+        DB::table($tableName)->insert($entryArray);
+        return $entryArray; 
+    }
+
     function deleteCollectionById($id){
         $tableName = DB::table('elula_collections')->select('collection_name')->where('id', $id)->first(); 
         DB::table('elula_collections')->where('id', $id)->delete(); 

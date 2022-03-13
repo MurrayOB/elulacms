@@ -23,7 +23,19 @@
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="display: flex; flex-direction: column">
             <h1 class="mytitle">Collections</h1>
+            {{-- Display Collections --}}
             <p id="collections"></p>
+            <br>
+            <br>
+            {{-- Popups --}}
+            <h1>Popups</h1>
+            <br>
+            <br>
+            <button>Edit Popups</button>
+            {{-- Newsletter --}}
+            <h1>Newsletter</h1>
+            <br>
+            <button>View Newsletters</button>
         </div>
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
             <h1>Welcome to the Elula CMS Dashboard</h1>
@@ -46,12 +58,27 @@
                 </div>
             </div>
             <!-- Collection Modal -->
-            <div id="collectionModal" class="custom-modal greater-z">
+            <div id="collectionModal" class="custom-modal">
                 <div class="custom-modal-content">
                     <span onclick="closeModals()" class="custom-modal-close">&times;</span>
                     <div id="collectionData"></div>
                 </div>
             </div>
+            {{-- Edit Collection --}}
+            <div id="editCollectionModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span onclick="closeModals()" class="custom-modal-close">&times;</span>
+                    <div id="editCollectionData"></div>
+                </div>
+            </div>
+            {{-- Edit Entry --}}
+            <div id="editEntryModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span onclick="closeModals()" class="custom-modal-close">&times;</span>
+                    <div id="editEntryData"></div>
+                </div>
+            </div>
+
         </div>
         <div style="display: flex; flex-direction: column">
             <img class="mt-1 mr-2 cursor-p" style="height: 30px"
@@ -64,6 +91,8 @@
         ////////////////////////////////////////////////////////////
         const collectionModal = document.getElementById("collectionModal");
         const addEntryModal = document.getElementById("addEntryModal");
+        const editCollectionModal = document.getElementById("editCollectionModal");
+        const editEntryModal = document.getElementById("editEntryModal");
 
         const fieldTypes = [{
                 id: 1,
@@ -244,7 +273,7 @@
             $globalSelectedCollection = singleCollection;
             let actions =
                 `<button onclick="editCollection()">Edit Collection</button> <button onclick="deleteCollection(${singleCollection.id})">Delete Collection</button>
-            <button onclick="addEntryForm()" style="float: right">Add Entry +</button>`;
+            <button onclick="openAddEntryForm()" style="float: right">Add Entry +</button>`;
             let innerHTMLCollection =
                 `<h2>${singleCollection.name}</h2>${actions}<br>`;
             let columns = '';
@@ -260,7 +289,7 @@
                     temp += `<td>${el[key]}</td>`;
                 }
                 temp +=
-                    '<td class="publish-btn"><button>publish</button></td><td><button>edit</button></td><td><button>delete</button></td></tr>';
+                    '<td class="publish-btn"><button>publish</button></td><td><button onclick="openEditEntryModal()">edit</button></td><td><button>delete</button></td></tr>';
                 data += temp;
             });
             let table =
@@ -285,12 +314,19 @@
         ////////////////////////////////////////////////////////////
         //Edit Collection Modal
         ////////////////////////////////////////////////////////////
-        function editCollection() {}
+        function editCollection() {
+            collectionModal.style.display = "none";
+            editCollectionModal.style.display = "block";
+            editCollectionForm = `<button onclick="
+            backBtn()
+            ">Back</button><h1>Edit Collection</h1>`;
+            document.getElementById("editCollectionData").innerHTML = editCollectionForm;
+        }
 
         ////////////////////////////////////////////////////////////
         //Add Entry Modal
         ////////////////////////////////////////////////////////////
-        function addEntryForm() {
+        function openAddEntryForm() {
             let entryForm = `<h2>${$globalSelectedCollection.name}</h2>`;
             addEntryModal.style.display = "block";
             collectionModal.style.display = "none";
@@ -322,7 +358,19 @@
         }
 
         function addEntry() {
-            console.log($globalAddEntryArray);
+            const data = {
+                collectionName: $globalSelectedCollection.name,
+                formData: $globalAddEntryArray
+            }
+            console.log(data);
+            axios.post('/cms/addEntry', data)
+                .then(function(response) {
+                    console.log(response);
+                }).catch(function(error) {
+                    console.log(error);
+                });
+
+            $globalAddEntryArray = [];
             //if success
             addEntryModal.style.display = "none";
             openCollectionModal($globalSelectedCollection.name);
@@ -330,7 +378,25 @@
 
         function backBtn() {
             addEntryModal.style.display = "none";
+            editCollectionModal.style.display = "none";
+            editEntryModal.style.display = "none";
             collectionModal.style.display = "block";
+        }
+
+        ////////////////////////////////////////////////////////////
+        //Edit Modal
+        ////////////////////////////////////////////////////////////
+        function openEditEntryModal() {
+            collectionModal.style.display = "none";
+            editEntryModal.style.display = "block";
+            editForm = `<button onclick="
+            backBtn()
+            ">Back</button>`;
+            document.getElementById("editEntryData").innerHTML = editForm;
+        }
+
+        function updateEntry() {
+
         }
 
         ////////////////////////////////////////////////////////////
@@ -339,6 +405,8 @@
         closeModals = () => {
             collectionModal.style.display = "none";
             addEntryModal.style.display = "none";
+            editCollectionModal.style.display = "none";
+            editEntryModal.style.display = "none";
         }
     </script>
 @endsection

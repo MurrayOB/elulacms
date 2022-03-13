@@ -17,6 +17,7 @@ class ElulacmsServiceProvider extends ServiceProvider{
         // __DIR__.'/../public/config/' => config_path('vendor/elulacms'),
         $this->publishes([
             __DIR__.'/../public' => public_path('vendor/elulacms'),
+            __DIR__.'/../public/config/elulacms.php' => config_path('elulacms.php'),
         ], 'public');
 
         if ($this->app->runningInConsole()) {

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    // 'aliases' => [
-    //     'Artisan' => Illuminate\Support\Facades\Artisan::class,
-    // ]
+    'cms' => [
+        'name' => 'Elulacms'
+    ]
 ]; 
