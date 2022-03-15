@@ -29,7 +29,9 @@ class CollectionHelper {
             foreach($fieldArray as $value){
                 $this->getTableType($table, $value); 
             }
-            $table->timestamps();
+            $table->boolean('published')->default(false);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
  
         //Store Collection name
@@ -77,19 +79,6 @@ class CollectionHelper {
         
     }
 
-    function addEntry($collectionName, $formData){
-        $tableName = 'elulacms_'.strtolower($collectionName); 
-        $entryArray = array(); 
-        $columns = ''; 
-        $values = ''; 
-        foreach($formData as $value){
-            $collumns += $value['columnsName'] . ','; 
-        }
-        
-        DB::table($tableName)->insert($entryArray);
-        return $entryArray; 
-    }
-
     function deleteCollectionById($id){
         $tableName = DB::table('elula_collections')->select('collection_name')->where('id', $id)->first(); 
         DB::table('elula_collections')->where('id', $id)->delete(); 
@@ -97,6 +86,31 @@ class CollectionHelper {
         return true; 
     }
 
+    function addEntry($collectionName, $formData){
+        $tableName = 'elulacms_'.strtolower($collectionName); 
+        $entryArray = array(); 
+        foreach($formData as $value){
+            $entryArray[$value['columnName']] = $value['value']; 
+        }
+        
+        DB::table($tableName)->insert($entryArray);
+        return true; 
+    }
+
+    function deleteEntry($id, $collectionName){
+        $deleted = DB::table($this->trueName($collectionName))->where('id', $id)->delete();
+        return $deleted; 
+    }
+
+    function publishEntry($id, $collectionName){
+        $value = DB::table($this->trueName($collectionName))->select('published')->where('id', $id)->first(); 
+        $updated = DB::table($this->trueName($collectionName))->where('id', $id)->update(['published' => !$value->published]); 
+        return 'Hello'; 
+    }
+
+    /**
+     * Private Functions
+     */
     private function getTableType(Blueprint $table, $value){
         $lowerCaseVal = strtolower($value['title']); 
         switch($value['id']){
@@ -119,5 +133,10 @@ class CollectionHelper {
                 return $table->boolean($lowerCaseVal); 
                 break;
         }
+    }
+
+    //Adds elulacms_ to collectionName
+    private function trueName($collectionName){
+        return 'elulacms_'.strtolower($collectionName); 
     }
 }

@@ -1,28 +1,20 @@
-To DO:
+# To DO:
 
-TOP PRIORITY:
+1. Edit entry data
+2. Edit collection columns (Add, remove columns)
 
-1. Create add entry endpoint
-2. Build section for editing the column types
-3. Add publish/ unpublish ability
+## NEXT PRIORITY:
+
 4. Able to add images into the cms / collections
 5. User Roles settings
 6. User roles
 
-Thoughts:
+## FUTURE FEATURES:
 
-Is a model necessary? If I make an api call that you call for the collection name,
-I can create a control that dynamically fetches the results and places it into JSON.
-I can also create a helper function that returns the collectionData to use inside a controller
-so that it can be passed return view('example')->with('collectionName', $collectionData)
-
-1. Create a model for the Collection
-2. Return list of Collections
-3. Allow to delete a collection
-4. Return a specific collections data (getCollectionDataByName) for api
-
-5. Add a collection helper function that returns the Model for the collection name.
-   Can be added like a normal model use Elulacms\getModel
+1. Mass select on Collections
+2. Popups
+3. Newsletters
+4. Drag and Drop UI (Potentially never)
 
 Commands:
 php artisan vendor:publish --tag=public --force
@@ -36,3 +28,27 @@ https://laravel.com/docs/5.0/schema
 
 Responses:
 https://laravel.com/docs/9.x/responses
+
+ElulaCMS Website:
+
+## Navlinks:
+
+1. docs
+2. new Features
+3. existing features/ why elulacms?
+4. why elulamcs? (reasons: modular, php, cheap, no costs)
+5. About
+6. Support
+7. Version
+
+## Home Page Layout:
+
+1. Introduction (small about + pictures + descriptions)
+
+2. New Features
+
+3. Give us a star on Github
+
+4. About ( + see more)
+
+5. Footer

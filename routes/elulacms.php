@@ -31,7 +31,7 @@ Route::post('/cms/updateCollection', [ElulacmsCollectionController::class, 'upda
 Route::post('/cms/addEntry', [ElulacmsCollectionController::class, 'addEntry']); 
 // TO DO
 Route::post('/cms/deleteEntry', [ElulacmsCollectionController::class, 'deleteEntry']); 
-Route::post('/cms/publishStatus', [ElulacmsCollectionController::class, 'publishStatus']); 
+Route::post('/cms/publishEntry', [ElulacmsCollectionController::class, 'publishEntry']); 
 Route::post('/cms/updateEntry', [ElulacmsCollectionController::class, 'updateEntry']); 
 
 

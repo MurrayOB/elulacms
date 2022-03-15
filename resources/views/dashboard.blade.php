@@ -22,32 +22,41 @@
     </style>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="display: flex; flex-direction: column">
-            <h1 class="mytitle">Collections</h1>
+            <h1 class="mytitle">Elulacms</h1>
+            <button onclick="openCreateCollectionModal()">Create Collection</button>
+            <h2 class="mytitle">Collections</h2>
             {{-- Display Collections --}}
             <p id="collections"></p>
             <br>
             <br>
             {{-- Popups --}}
-            <h1>Popups</h1>
+            <h2>Popups</h2>
             <br>
             <br>
             <button>Edit Popups</button>
             {{-- Newsletter --}}
-            <h1>Newsletter</h1>
+            <h2>Newsletter</h2>
             <br>
             <button>View Newsletters</button>
         </div>
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
             <h1>Welcome to the Elula CMS Dashboard</h1>
             <p>Create collections, page data and manage CMS users</p>
-            {{-- form --}}
-            <input type="text" id="collectionName" placeholder="Collection Name">
-            <br><br>
-            <div id="arrPrint"></div>
-            <button onclick="addField(event)">Add Field</button>
-            <br><br>
-            <button onclick="createCollection(event)">Create Collection</button>
-            <p id="result"></p>
+            {{-- Create Collection Modal Form --}}
+            <div id="createCollectionModal" class="custom-modal">
+                <div class="custom-modal-content">
+                    <span onclick="closeModals()" class="custom-modal-close">&times;</span>
+                    <br>
+                    <h2>Create Collection</h2>
+                    <input type="text" id="collectionName" placeholder="Collection Name">
+                    <br><br>
+                    <div id="arrPrint"></div>
+                    <button onclick="addField(event)">Add Field</button>
+                    <br><br>
+                    <button onclick="createCollection(event)">Create Collection</button>
+                    <p id="result"></p>
+                </div>
+            </div>
             {{-- Add Entry --}}
             <div id="addEntryModal" class="custom-modal">
                 <div class="custom-modal-content">
@@ -89,6 +98,7 @@
         ////////////////////////////////////////////////////////////
         //Global Variables
         ////////////////////////////////////////////////////////////
+        const createCollectionModal = document.getElementById("createCollectionModal");
         const collectionModal = document.getElementById("collectionModal");
         const addEntryModal = document.getElementById("addEntryModal");
         const editCollectionModal = document.getElementById("editCollectionModal");
@@ -126,7 +136,7 @@
         }, ];
 
         let jsToHTML = ``;
-        let globalCollections = [];
+        let $globalCollections = [];
         let $globalSelectedCollection = null;
         let $globalAddEntryArray = [];
 
@@ -158,8 +168,7 @@
             }
 
             let collectionPrint = '';
-            globalCollections = collections;
-            console.log(globalCollections);
+            $globalCollections = collections;
             collections.forEach(function(el) {
                 collectionPrint +=
                     `<button onclick="openCollectionModal('${el.name}')">View ${el.name}</button><br/><br/>`;
@@ -170,6 +179,10 @@
         ////////////////////////////////////////////////////////////
         //Create Collection Form
         ////////////////////////////////////////////////////////////
+        function openCreateCollectionModal() {
+            createCollectionModal.style.display = "block";
+        }
+
         function createEmptyField() {
             document.getElementById("arrPrint").innerHTML = `<input type="text" placeholder="Field Name" onchange="updateArray(event, 0)" id="field-0" value=""><select onchange="updateArrayFromSelect(event, 0)" name="" id="">
                 <option default selected>Select Type</option>` + getFieldTypes() +
@@ -266,7 +279,7 @@
         ////////////////////////////////////////////////////////////
         openCollectionModal = (collectionName) => {
             collectionModal.style.display = "block";
-            let singleCollection = globalCollections.filter(function(el) {
+            let singleCollection = $globalCollections.filter(function(el) {
                 return el.name == collectionName;
             });
             singleCollection = singleCollection[0];
@@ -279,17 +292,30 @@
             let columns = '';
             let data = '';
             let keys = singleCollection.data[0];
+            let i = 0;
+            let publishKeyIndex = 0;
             for (const key in keys) {
-                columns += `<th>${key}</th>`;
+                if (key == 'published') {
+                    publishKeyIndex = i;
+                } else {
+                    columns += `<th>${key}</th>`;
+                }
+                i += 1;
             }
             columns += '<th>Status</th>';
             singleCollection.data.forEach(function(el, index) {
                 let temp = '<tr>';
+                let x = 0;
                 for (const key in el) {
-                    temp += `<td>${el[key]}</td>`;
+                    if (x == publishKeyIndex) {
+
+                    } else {
+                        temp += `<td>${el[key]}</td>`;
+                    }
+                    x += 1;
                 }
                 temp +=
-                    '<td class="publish-btn"><button>publish</button></td><td><button onclick="openEditEntryModal()">edit</button></td><td><button>delete</button></td></tr>';
+                    `<td class="publish-btn"><button onclick="publishEntry(${el.id}, '${singleCollection.name}')">${el.published == 0 ? 'publish': 'unpublish'}</button></td><td><button onclick="openEditEntryModal()">edit</button></td><td><button onclick="deleteEntry(${el.id}, '${singleCollection.name}')">delete</button></td></tr>`;
                 data += temp;
             });
             let table =
@@ -308,6 +334,30 @@
                 }
             }).catch(function(error) {
                 console.log(error);
+            });
+        }
+
+        function deleteEntry(id, collectionName) {
+            const data = {
+                id: id,
+                collectionName: collectionName
+            }
+            axios.post('/cms/deleteEntry', data).then(function(res) {
+                location.reload();
+            }).catch(function(err) {
+                console.log(err);
+            });
+        }
+
+        function publishEntry(id, collectionName) {
+            const data = {
+                id: id,
+                collectionName: collectionName
+            }
+            axios.post('/cms/publishEntry', data).then(function(res) {
+                location.reload();
+            }).catch(function(err) {
+                console.log(err);
             });
         }
 
@@ -365,15 +415,14 @@
             console.log(data);
             axios.post('/cms/addEntry', data)
                 .then(function(response) {
-                    console.log(response);
+                    //$globalAddEntryArray = [];
+                    //if success
+                    location.reload();
                 }).catch(function(error) {
                     console.log(error);
                 });
 
-            $globalAddEntryArray = [];
-            //if success
-            addEntryModal.style.display = "none";
-            openCollectionModal($globalSelectedCollection.name);
+
         }
 
         function backBtn() {
@@ -407,6 +456,7 @@
             addEntryModal.style.display = "none";
             editCollectionModal.style.display = "none";
             editEntryModal.style.display = "none";
+            createCollectionModal.style.display = "none";
         }
     </script>
 @endsection
