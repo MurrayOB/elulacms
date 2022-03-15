@@ -3,6 +3,15 @@
 1. Edit entry data
 2. Edit collection columns (Add, remove columns)
 
+## Up and coming:
+
+1. Newsletter
+2. Whitelabeling
+3. Emailing
+4. Drag and drop UI building
+
+TOP PRIORITY:
+
 ## NEXT PRIORITY:
 
 4. Able to add images into the cms / collections
