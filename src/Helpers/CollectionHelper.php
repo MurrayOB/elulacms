@@ -12,6 +12,9 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CollectionHelper {
 
+    /**
+     * Collections: 
+     */
     function createCollection(string $collectionName, $fieldArray){
         $tableName = 'elulacms_'.strtolower($collectionName); 
 
@@ -86,6 +89,10 @@ class CollectionHelper {
         return true; 
     }
 
+    /**
+     * Entries: 
+     */
+
     function addEntry($collectionName, $formData){
         $tableName = 'elulacms_'.strtolower($collectionName); 
         $entryArray = array(); 
@@ -106,6 +113,24 @@ class CollectionHelper {
         $value = DB::table($this->trueName($collectionName))->select('published')->where('id', $id)->first(); 
         $updated = DB::table($this->trueName($collectionName))->where('id', $id)->update(['published' => !$value->published]); 
         return 'Hello'; 
+    }
+
+    function updateEntry($id, $collectionName, $entry){
+        $trueName = $this->trueName($collectionName); 
+        $collectionID = DB::table('elula_collections')->select('id')->where('collection_name', $trueName)->first()->id;
+        $columnNames = DB::table('elula_collections_fields')->select('name')->where('collection_id', $collectionID)->get(); 
+        
+        $updateArray = array(); 
+        foreach($columnNames as $value){
+            $updateArray[strtolower($value->name)] = $entry[strtolower($value->name)]; 
+        }
+        //add publish
+        $updateArray['published'] = $entry['published']; 
+        
+        $updated = DB::table($trueName)
+              ->where('id', $id)
+              ->update($updateArray);
+        return $updated; 
     }
 
     /**

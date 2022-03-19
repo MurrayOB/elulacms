@@ -70,4 +70,12 @@ class ElulacmsCollectionController extends Controller {
             'success' => $response
         ]); 
     }
+
+    public function updateEntry(Request $request){
+        $collectionHelper = new CollectionHelper();
+        $response = $collectionHelper->updateEntry($request->id, $request->collectionName, $request->entry); 
+        return response()->json([
+            'success' => $response
+        ]); 
+    }
 }

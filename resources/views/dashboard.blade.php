@@ -139,6 +139,7 @@
         let $globalCollections = [];
         let $globalSelectedCollection = null;
         let $globalAddEntryArray = [];
+        let $globalUpdateEntry = null;
 
         ////////////////////////////////////////////////////////////
         //On Load
@@ -315,7 +316,7 @@
                     x += 1;
                 }
                 temp +=
-                    `<td class="publish-btn"><button onclick="publishEntry(${el.id}, '${singleCollection.name}')">${el.published == 0 ? 'publish': 'unpublish'}</button></td><td><button onclick="openEditEntryModal()">edit</button></td><td><button onclick="deleteEntry(${el.id}, '${singleCollection.name}')">delete</button></td></tr>`;
+                    `<td class="publish-btn"><button onclick="publishEntry(${el.id}, '${singleCollection.name}')">${el.published == 0 ? 'publish': 'unpublish'}</button></td><td><button onclick="openEditEntryModal(${el.id}, '${singleCollection.name}')">edit</button></td><td><button onclick="deleteEntry(${el.id}, '${singleCollection.name}')">delete</button></td></tr>`;
                 data += temp;
             });
             let table =
@@ -369,7 +370,7 @@
             editCollectionModal.style.display = "block";
             editCollectionForm = `<button onclick="
             backBtn()
-            ">Back</button><h1>Edit Collection</h1>`;
+            ">Back</button><h1>Edit Collection</h1><br><button>Add Field</button>`;
             document.getElementById("editCollectionData").innerHTML = editCollectionForm;
         }
 
@@ -395,6 +396,22 @@
                 value: null
             });
             if (type == 1) {
+                return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
+            }
+
+            if (type == 2) {
+                return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
+            }
+
+            if (type == 3) {
+                return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
+            }
+
+            if (type == 4) {
+                return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
+            }
+
+            if (type == 5) {
                 return `<input placeholder="${name}" type="text" onchange="updateEntryInput(event, ${index})"></input><br><br>`;
             }
         }
@@ -433,19 +450,65 @@
         }
 
         ////////////////////////////////////////////////////////////
-        //Edit Modal
+        //Update/ Edit Entry Modal
         ////////////////////////////////////////////////////////////
-        function openEditEntryModal() {
+        function openEditEntryModal(id, collectionName) {
             collectionModal.style.display = "none";
             editEntryModal.style.display = "block";
             editForm = `<button onclick="
             backBtn()
-            ">Back</button>`;
+            ">Back</button><br><h1>Entry</h1><br>`;
+
+            let entry = $globalSelectedCollection.data.filter(function(el) {
+                return el.id == id;
+            });
+            entry = entry[0];
+            delete entry.id;
+            delete entry.created_at;
+            delete entry.updated_at;
+            $globalUpdateEntry = entry;
+
+            //Create the form
+            $globalSelectedCollection.fields.forEach(function(el, index) {
+                let columnName = el.name.toLowerCase();
+                let columnType = el.type;
+                return editForm += getEditEntryType(columnName, columnType, entry[columnName.toLowerCase()], index);
+            });
+            editForm +=
+                `<label for="publish">Published</label><br>
+            <input type="checkbox" id="publishedCheck" name="publish" onchange="onchangePublish(event)"><br>`;
+
+            editForm +=
+                `<button onclick="updateEntry(${id}, '${collectionName}')">SAVE</button>`;
             document.getElementById("editEntryData").innerHTML = editForm;
+            document.getElementById("publishedCheck").checked = entry.published;
         }
 
-        function updateEntry() {
+        //${JSON.stringify(entry).split('"').join("&quot;")}
+        function getEditEntryType(columnName, columnType, value, index) {
+            return `<label for="${columnName}">${columnName}</label><br><input name="${columnName}" placeholder="${value}" value="${value}" onchange="updateGlobalUpdateArray(event, '${columnName}')" type="text" /><br><br>`;
+        }
 
+        function onchangePublish(e) {
+            $globalUpdateEntry.published = e.target.checked;
+        }
+
+        function updateGlobalUpdateArray(e, columnName) {
+            $globalUpdateEntry[columnName] = e.target.value;
+        }
+
+        function updateEntry(id, collectionName) {
+            const data = {
+                id: id,
+                entry: $globalUpdateEntry,
+                collectionName: collectionName
+            }
+            axios.post('/cms/updateEntry', data).then(function(res) {
+                location.reload();
+                console.log(res);
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         ////////////////////////////////////////////////////////////
