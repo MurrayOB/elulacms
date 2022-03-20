@@ -5,6 +5,7 @@ namespace Murrayobrien\Elulacms\Helpers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint; 
+use Murrayobrien\Elulacms\Helpers\Classes\FieldOptions;
 
 //This class is intended to be used by
 //1. The front-end of the Cms 
@@ -29,8 +30,9 @@ class CollectionHelper {
         Schema::create($tableName, function (Blueprint $table) use ($fieldArray) {
             $table->increments('id');
             //Dynamically Add Values
+            $fieldOptions = new FieldOptions(); 
             foreach($fieldArray as $value){
-                $this->getTableType($table, $value); 
+                $this->getTableType($table, $value, $fieldOptions); 
             }
             $table->boolean('published')->default(false);
             $table->timestamp('created_at')->useCurrent();
@@ -45,7 +47,7 @@ class CollectionHelper {
         //Store collection fields
         $newArray = array(); 
         foreach($fieldArray as $value){
-            array_push($newArray, ['name' => $value['title'], 'type' => $value['id'], 'collection_id' => $collectionID]); 
+            array_push($newArray, ['name' => strtolower($value['title']), 'type' => $value['id'], 'collection_id' => $collectionID]); 
         }
         DB::table('elula_collections_fields')->insert($newArray); 
 
@@ -64,7 +66,7 @@ class CollectionHelper {
         $collections = array(); 
         foreach($collectionNames as $value){
             $fields = DB::table('elula_collections_fields')
-                        ->select('name','type')
+                        ->select('id', 'name','type')
                         ->where('collection_id', $value->id) 
                         ->get(); 
             $data = DB::table($value->collection_name)
@@ -87,6 +89,43 @@ class CollectionHelper {
         DB::table('elula_collections')->where('id', $id)->delete(); 
         Schema::drop($tableName->collection_name); 
         return true; 
+    }
+
+    function updateCollection($collectionID, $originalName, $updatedName, $updatedCollectionFields){
+        $changedName = 'elulacms'.$originalName;  
+        //Rename collection name
+        if($originalName !== $updatedName && $updatedName !== null){
+            Schema::rename('elulacms_'.$originalName, 'elulacms_'.$updatedName);
+            DB::table('elula_collections')
+                ->where('id', $collectionID)
+                ->update(['collection_name' => 'elulacms_'.$updatedName]); 
+            $changedName = 'elulacms_'.$updatedName; 
+        }
+        
+        //Insert new fields into elula_collections_fields
+        $newFields = []; 
+        foreach($updatedCollectionFields as $value){
+            if($value['id'] == null){
+                array_push($newFields, ['name' => $value['name'], 'type' => $value['type'], 'collection_id' => $collectionID]); 
+            }
+        }
+        if($newFields !== []){
+            //Add fields to elula_collections_fields
+            DB::table('elula_collections_fields')->insert($newFields); 
+            //Add new Columns to elulacms_table
+            Schema::table($changedName, function(Blueprint $table) use ($newFields) {
+                foreach($newFields as $value){
+                    $newArray = []; 
+                    $newArray['id'] = $value['type']; 
+                    $newArray['title'] = $value['name'];
+                    $fieldOptions = new FieldOptions(true);  
+                    $this->getTableType($table, $newArray, $fieldOptions);  
+                }
+            });
+        }
+        //Remove deleted columns from elula_collections_fields and the table elulacms_table
+        //get id and field name from elula_collections_fields
+        //check if id is missing from the array and not null save the name and delete that column from elulacms_table
     }
 
     /**
@@ -136,11 +175,15 @@ class CollectionHelper {
     /**
      * Private Functions
      */
-    private function getTableType(Blueprint $table, $value){
+    private function getTableType(Blueprint $table, $value, FieldOptions $options){
         $lowerCaseVal = strtolower($value['title']); 
         switch($value['id']){
             case 1:
-                return $table->string($lowerCaseVal); 
+                if($options->nullable){
+                    return $table->string($lowerCaseVal)->nullable(); 
+                }else{
+                    return $table->string($lowerCaseVal); 
+                }
                 break;
             case 2:
                 return $table->longText($lowerCaseVal); 
@@ -165,3 +208,4 @@ class CollectionHelper {
         return 'elulacms_'.strtolower($collectionName); 
     }
 }
+

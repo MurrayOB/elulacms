@@ -46,6 +46,14 @@ class ElulacmsCollectionController extends Controller {
         ]); 
     }
 
+    public function updateCollection(Request $request){
+        $collectionHelper = new CollectionHelper(); 
+        $response = $collectionHelper->updateCollection($request->collectionID, $request->originalCollectionName, $request->updatedCollectionName, $request->updatedCollection); 
+        return response()->json([
+            'success' => $response
+        ]); 
+    }
+
     //Entries
     public function addEntry(Request $request){
         $collectionHelper = new CollectionHelper(); 

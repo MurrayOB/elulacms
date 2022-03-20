@@ -30,14 +30,14 @@
             <br>
             <br>
             {{-- Popups --}}
-            <h2>Popups</h2>
+            {{-- <h2>Popups</h2>
             <br>
             <br>
-            <button>Edit Popups</button>
+            <button>Edit Popups</button> --}}
             {{-- Newsletter --}}
-            <h2>Newsletter</h2>
+            {{-- <h2>Newsletter</h2>
             <br>
-            <button>View Newsletters</button>
+            <button>View Newsletters</button> --}}
         </div>
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
             <h1>Welcome to the Elula CMS Dashboard</h1>
@@ -141,6 +141,8 @@
         let $globalAddEntryArray = [];
         let $globalUpdateEntry = null;
 
+        let $globalEditCollectionArray = [];
+
         ////////////////////////////////////////////////////////////
         //On Load
         ////////////////////////////////////////////////////////////
@@ -190,14 +192,6 @@
                 `</select><button onclick="removeField(0)">remove</button> <br /><br />`;
         }
 
-        function getFieldTypes() {
-            let types = ``;
-            fieldTypes.forEach(function(el) {
-                types += `<option value="${el.id}">${el.desc}</option>`
-            });
-            return types;
-        }
-
         function updateArray(e, fieldIndex) {
             //loadCollections();
             fieldsArray.forEach(function(el, index) {
@@ -212,7 +206,7 @@
         }
 
         function removeField(index) {
-            fieldsArray.splice(index, 1)
+            fieldsArray.splice(index, 1);
             updateState();
         }
 
@@ -286,7 +280,7 @@
             singleCollection = singleCollection[0];
             $globalSelectedCollection = singleCollection;
             let actions =
-                `<button onclick="editCollection()">Edit Collection</button> <button onclick="deleteCollection(${singleCollection.id})">Delete Collection</button>
+                `<p>api: ${singleCollection.name}</p><br><button onclick="editCollection()">Edit Collection</button> <button onclick="deleteCollection(${singleCollection.id})">Delete Collection</button>
             <button onclick="openAddEntryForm()" style="float: right">Add Entry +</button>`;
             let innerHTMLCollection =
                 `<h2>${singleCollection.name}</h2>${actions}<br>`;
@@ -368,10 +362,81 @@
         function editCollection() {
             collectionModal.style.display = "none";
             editCollectionModal.style.display = "block";
-            editCollectionForm = `<button onclick="
+
+            $globalEditCollectionArray = [];
+            $globalEditCollectionArray = JSON.parse(JSON.stringify($globalSelectedCollection.fields));
+            $globalEditCollectionArray.updatedCollectionName = JSON.parse(JSON.stringify($globalSelectedCollection.name));
+            updateEditCollectionState();
+        }
+
+        function updateEditCollectionState() {
+            let editCollectionForm =
+                `<button onclick="
             backBtn()
-            ">Back</button><h1>Edit Collection</h1><br><button>Add Field</button>`;
+            ">Back</button><h1>Edit Collection</h1><button style="float: right" onclick="saveCollectionEdit()">SAVE CHANGES</button><br>`;
+            editCollectionForm +=
+                `<label>Collection Name: </label><input onchange="updateCollectionName(event)" value="${$globalEditCollectionArray.updatedCollectionName}" placeholder="Collection Name" /><br><br>`;
+            $globalEditCollectionArray.forEach(function(el, index) {
+                if (el.id == null) {
+                    editCollectionForm +=
+                        `<input onchange="renameField(event, ${index})" value="${el.name}" name="${el.name}" /><select onchange="updateFieldFromSelect(event, ${index})"><option default selected>Select Type</option>` +
+                        getFieldTypes() +
+                        `</select><button onclick="removeCollectionField(${index})">remove</button><br><br>`;
+                } else {
+                    editCollectionForm +=
+                        `<input onchange="renameField(event, ${index})" value="${el.name}" name="${el.name}" /><button onclick="removeCollectionField(${index})">remove</button><br><br>`;
+                }
+            });
+            editCollectionForm += `<br><button onclick="addNewField()">Add Field</button>`;
             document.getElementById("editCollectionData").innerHTML = editCollectionForm;
+        }
+
+        function updateCollectionName(e) {
+            $globalEditCollectionArray.updatedCollectionName = e.target.value;
+        }
+
+        function updateFieldFromSelect(e, index) {
+            $globalEditCollectionArray[index].type = parseInt(e.target.value);
+        }
+
+        function renameField(e, i) {
+            $globalEditCollectionArray.forEach(function(el, index) {
+                if (i === index) {
+                    $globalEditCollectionArray[index].name = e.target.value;
+                }
+            });
+        }
+
+        function removeCollectionField(index) {
+            $globalEditCollectionArray.splice(index, 1);
+            updateEditCollectionState();
+        }
+
+        function addNewField() {
+            $globalEditCollectionArray.push({
+                id: null,
+                name: '',
+                type: null,
+            });
+            updateEditCollectionState();
+        }
+
+        function saveCollectionEdit() {
+            const data = {
+                collectionID: $globalSelectedCollection.id,
+                originalCollectionName: $globalSelectedCollection.name,
+                updatedCollectionName: $globalEditCollectionArray.updatedCollectionName,
+                updatedCollection: null
+            };
+            delete $globalEditCollectionArray.updatedCollectionName;
+            data.updatedCollection = $globalEditCollectionArray;
+
+            console.log(data);
+            axios.post('/cms/updateCollection', data).then(function(res) {
+                location.reload();
+            }).catch(function(err) {
+                console.log(err);
+            });
         }
 
         ////////////////////////////////////////////////////////////
@@ -390,6 +455,7 @@
             document.getElementById("addEntryModalData").innerHTML = entryForm;
         }
 
+        //THIS FUNCTION AND FUNCTION GETCOLUMNTYPES COULD BE IMPROVED UPON
         function returnInputType(name, type, index) {
             $globalAddEntryArray.push({
                 columnName: name,
@@ -442,23 +508,14 @@
 
         }
 
-        function backBtn() {
-            addEntryModal.style.display = "none";
-            editCollectionModal.style.display = "none";
-            editEntryModal.style.display = "none";
-            collectionModal.style.display = "block";
-        }
-
         ////////////////////////////////////////////////////////////
         //Update/ Edit Entry Modal
         ////////////////////////////////////////////////////////////
         function openEditEntryModal(id, collectionName) {
             collectionModal.style.display = "none";
             editEntryModal.style.display = "block";
-            editForm = `<button onclick="
-            backBtn()
-            ">Back</button><br><h1>Entry</h1><br>`;
 
+            //Get Entry
             let entry = $globalSelectedCollection.data.filter(function(el) {
                 return el.id == id;
             });
@@ -467,6 +524,11 @@
             delete entry.created_at;
             delete entry.updated_at;
             $globalUpdateEntry = entry;
+
+            editForm =
+                `<button onclick="
+            backBtn()
+            ">Back</button><br><h1>Entry</h1><button onclick="deleteEntry(${id}, '${collectionName}')" style="float: right" >delete</button><br>`;
 
             //Create the form
             $globalSelectedCollection.fields.forEach(function(el, index) {
@@ -520,6 +582,24 @@
             editCollectionModal.style.display = "none";
             editEntryModal.style.display = "none";
             createCollectionModal.style.display = "none";
+        }
+
+        function backBtn() {
+            addEntryModal.style.display = "none";
+            editCollectionModal.style.display = "none";
+            editEntryModal.style.display = "none";
+            collectionModal.style.display = "block";
+        }
+
+        ////////////////////////////////////////////////////////////
+        //Global Helpers
+        ////////////////////////////////////////////////////////////
+        function getFieldTypes() {
+            let types = ``;
+            fieldTypes.forEach(function(el) {
+                types += `<option value="${el.id}">${el.desc}</option>`
+            });
+            return types;
         }
     </script>
 @endsection

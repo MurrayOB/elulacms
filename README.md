@@ -1,14 +1,24 @@
+# TOOLS:
+
+1.  https://devdojo.com/tails/app - Build some UI with Tailwind drag and drop
+
 # To DO:
 
 1. Edit entry data
 2. Edit collection columns (Add, remove columns)
+3. Allow when creating fields to choose nullable, required, default value
+
+# Settings Page:
+
+1. Select whats on the Sidebar (Google Analytics; Newsletter; whitelabeling)
 
 ## Up and coming:
 
 1. Newsletter
 2. Whitelabeling
 3. Emailing
-4. Drag and drop UI building
+4. Google Analytics
+5. Drag and drop UI building
 
 TOP PRIORITY:
 
