@@ -142,6 +142,7 @@
         let $globalUpdateEntry = null;
 
         let $globalEditCollectionArray = [];
+        let $globalRemoveField = [];
 
         ////////////////////////////////////////////////////////////
         //On Load
@@ -384,7 +385,7 @@
                         `</select><button onclick="removeCollectionField(${index})">remove</button><br><br>`;
                 } else {
                     editCollectionForm +=
-                        `<input onchange="renameField(event, ${index})" value="${el.name}" name="${el.name}" /><button onclick="removeCollectionField(${index})">remove</button><br><br>`;
+                        `<input onchange="renameField(event, ${index})" value="${el.name}" name="${el.name}" /><button onclick="removeCollectionField(${index}, ${el.id})">remove</button><br><br>`;
                 }
             });
             editCollectionForm += `<br><button onclick="addNewField()">Add Field</button>`;
@@ -407,7 +408,12 @@
             });
         }
 
-        function removeCollectionField(index) {
+        function removeCollectionField(index, id = null) {
+            if (id !== null) {
+                $globalRemoveField.push({
+                    fieldID: id
+                });
+            }
             $globalEditCollectionArray.splice(index, 1);
             updateEditCollectionState();
         }
@@ -426,15 +432,13 @@
                 collectionID: $globalSelectedCollection.id,
                 originalCollectionName: $globalSelectedCollection.name,
                 updatedCollectionName: $globalEditCollectionArray.updatedCollectionName,
-                updatedCollection: null
+                updatedCollection: null,
+                removedItems: $globalRemoveField
             };
             delete $globalEditCollectionArray.updatedCollectionName;
             data.updatedCollection = $globalEditCollectionArray;
-
-            console.log(data);
-            axios.post('/cms/updateCollection', data).then(function(res) {
-                location.reload();
-            }).catch(function(err) {
+            console.log(data.removedItems);
+            axios.post('/cms/updateCollection', data).then(function(res) {}).catch(function(err) {
                 console.log(err);
             });
         }

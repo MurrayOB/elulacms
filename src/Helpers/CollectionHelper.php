@@ -91,8 +91,8 @@ class CollectionHelper {
         return true; 
     }
 
-    function updateCollection($collectionID, $originalName, $updatedName, $updatedCollectionFields){
-        $changedName = 'elulacms'.$originalName;  
+    function updateCollection($collectionID, $originalName, $updatedName, $updatedCollectionFields, $removedItems){
+        $changedName = 'elulacms_'.$originalName;  
         //Rename collection name
         if($originalName !== $updatedName && $updatedName !== null){
             Schema::rename('elulacms_'.$originalName, 'elulacms_'.$updatedName);
@@ -123,9 +123,19 @@ class CollectionHelper {
                 }
             });
         }
-        //Remove deleted columns from elula_collections_fields and the table elulacms_table
-        //get id and field name from elula_collections_fields
-        //check if id is missing from the array and not null save the name and delete that column from elulacms_table
+        
+        if($removedItems == []){
+            return; 
+        }
+        
+        foreach($removedItems as $value){
+            $columnName = DB::table('elula_collections_fields')->select('name')->where('id', $value['fieldID'])->first(); 
+            DB::table('elula_collections_fields')->where('id', $value['fieldID'])->delete(); 
+            Schema::table($changedName, function(Blueprint $table) use ($columnName){
+                $table->dropColumn($columnName->name);
+            });
+        }
+        return 'success'; 
     }
 
     /**

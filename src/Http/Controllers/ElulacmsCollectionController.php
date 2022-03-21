@@ -48,7 +48,14 @@ class ElulacmsCollectionController extends Controller {
 
     public function updateCollection(Request $request){
         $collectionHelper = new CollectionHelper(); 
-        $response = $collectionHelper->updateCollection($request->collectionID, $request->originalCollectionName, $request->updatedCollectionName, $request->updatedCollection); 
+        $response = $collectionHelper->updateCollection(
+            $request->collectionID, 
+            $request->originalCollectionName, 
+            $request->updatedCollectionName, 
+            $request->updatedCollection, 
+            $request->removedItems
+        ); 
+
         return response()->json([
             'success' => $response
         ]); 
