@@ -22,7 +22,7 @@
     </style>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div style="display: flex; flex-direction: column">
-            <h1 class="mytitle">Elulacms</h1>
+            <h1 class="mytitle">+</h1>
             <button onclick="openCreateCollectionModal()">Create Collection</button>
             <h2 class="mytitle">Collections</h2>
             {{-- Display Collections --}}
@@ -38,6 +38,8 @@
             {{-- <h2>Newsletter</h2>
             <br>
             <button>View Newsletters</button> --}}
+            <h2>Media</h2>
+            <button onclick="">See media library</button>
         </div>
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
             <h1>Welcome to the Elula CMS Dashboard</h1>
@@ -358,7 +360,7 @@
         }
 
         ////////////////////////////////////////////////////////////
-        //Edit Collection Modal
+        //Update Collection Modal
         ////////////////////////////////////////////////////////////
         function editCollection() {
             collectionModal.style.display = "none";
@@ -427,6 +429,7 @@
             updateEditCollectionState();
         }
 
+        //post
         function saveCollectionEdit() {
             const data = {
                 collectionID: $globalSelectedCollection.id,
@@ -437,8 +440,10 @@
             };
             delete $globalEditCollectionArray.updatedCollectionName;
             data.updatedCollection = $globalEditCollectionArray;
-            console.log(data.removedItems);
-            axios.post('/cms/updateCollection', data).then(function(res) {}).catch(function(err) {
+
+            axios.post('/cms/updateCollection', data).then(function(res) {
+                location.reload();
+            }).catch(function(err) {
                 console.log(err);
             });
         }

@@ -1,46 +1,43 @@
-# TOOLS:
-
-1.  https://devdojo.com/tails/app - Build some UI with Tailwind drag and drop
-
 # To DO:
 
-1. Edit entry data
-2. Edit collection columns (Add, remove columns)
+//FOCUS ONLY ON THE CMS FOR NOW (complete basic strapi capabilities)
+
+1. Convert / investigate FRONTEND to VUEJS (VUEJS FRONTEND)
+2. Handle the image / images upload / field / media library
 3. Allow when creating fields to choose nullable, required, default value
 
-# Settings Page:
+4. Form validations and backend validations (VALIDATION)
+5. Handle authenticaion / auth settings (AUTHENTICATION)
+6. Add user roles to settings page
+7. Caching
 
-1. Select whats on the Sidebar (Google Analytics; Newsletter; whitelabeling)
-
-## Up and coming:
+## FUTURE FEATURES:
 
 1. Newsletter
 2. Whitelabeling
 3. Emailing
 4. Google Analytics
 5. Drag and drop UI building
+6. Mass select on Collections
+7. Popups
+8. Newsletters
+9. Drag and Drop UI (Potentially never)
+10. On settings page : Select whats on the Sidebar (Google Analytics; Newsletter; whitelabeling)
 
-TOP PRIORITY:
+## Commands:
 
-## NEXT PRIORITY:
-
-4. Able to add images into the cms / collections
-5. User Roles settings
-6. User roles
-
-## FUTURE FEATURES:
-
-1. Mass select on Collections
-2. Popups
-3. Newsletters
-4. Drag and Drop UI (Potentially never)
-
-Commands:
 php artisan vendor:publish --tag=public --force
 php artisan cache:clear
 php artisan config:clear
 
-Docs:
+# Reasons to Elulacms instead of something like Strapi or Wordpress?
+
+1. Modular for laravel
+2. Can be Headless and in PHP so it can be hosted on any server without NODE.js (others are outdated)
+3. Can be used as a CRUD for your laravel site
+4. Whitelabeling so that your client gets a clean interface and you can add your own branding/ + admin themes
+
+## Docs:
 
 Schema:
 https://laravel.com/docs/5.0/schema
@@ -48,7 +45,11 @@ https://laravel.com/docs/5.0/schema
 Responses:
 https://laravel.com/docs/9.x/responses
 
-ElulaCMS Website:
+## TOOLS:
+
+1.  https://devdojo.com/tails/app - Build some UI with Tailwind drag and drop
+
+# ElulaCMS Website:
 
 ## Navlinks:
 
