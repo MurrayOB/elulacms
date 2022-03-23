@@ -11,6 +11,11 @@
 6. Add user roles to settings page
 7. Caching
 
+## Future TO DOs:
+
+1. Testing
+2. Server environment testing
+
 ## FUTURE FEATURES:
 
 1. Newsletter
@@ -44,6 +49,10 @@ https://laravel.com/docs/5.0/schema
 
 Responses:
 https://laravel.com/docs/9.x/responses
+
+install vuetify
+
+https://codersdiaries.com/blog/laravel-vuetify
 
 ## TOOLS:
 

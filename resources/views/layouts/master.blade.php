@@ -29,6 +29,10 @@
 </head>
 
 <body>
+    <div id="app">
+        <example-component></example-component>
+    </div>
+
     @yield('content')
     {{-- @include('layouts.footer') --}}
     @stack('scripts')

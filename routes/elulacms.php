@@ -14,8 +14,12 @@ Route::get('/cms/login', function(){
     return view('elulacms::auth/login')->with('cmsname', config('elulacms.cms.name')); 
 }); 
 
+// Route::get('/cms/dashboard', function(){
+//     return view('elulacms::dashboard'); 
+// });
+
 Route::get('/cms/dashboard', function(){
-    return view('elulacms::dashboard'); 
+    return view('elulacms::layouts.master'); 
 });
 
 /**

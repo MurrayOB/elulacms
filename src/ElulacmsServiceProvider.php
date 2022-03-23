@@ -3,6 +3,7 @@
 namespace Murrayobrien\Elulacms; 
 
 use Illuminate\Support\ServiceProvider; 
+use Artisan;
 
 class ElulacmsServiceProvider extends ServiceProvider{
     
@@ -24,6 +25,11 @@ class ElulacmsServiceProvider extends ServiceProvider{
             $this->commands([
                 Commands\InstallCommand::class,
             ]);
+        }
+
+        //When in Development
+        if(env('APP_DEBUG')){
+            Artisan::call('vendor:publish', array('--tag' => 'public', '--force' => true));
         }
     }
 
