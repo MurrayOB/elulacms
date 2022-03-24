@@ -22,9 +22,10 @@ import media from "./components/pages/media";
 
 const routes = [
   {
-    path: "/cms/dashboard/collections/:name",
+    path: "/cms/dashboard/collection/:name",
     name: "collection",
     component: collection,
+    props: true,
   },
   {
     path: "/cms/dashboard/media",
@@ -43,6 +44,11 @@ const router = new VueRouter({
   routes: routes,
 });
 
+import Vuex from "vuex";
+import storeData from "./store/globalStore";
+Vue.use(Vuex);
+const store = new Vuex.Store(storeData);
+
 const main = new Vue({
   el: "#app",
   vuetify,
@@ -51,4 +57,5 @@ const main = new Vue({
     sidebar: sidebar,
   },
   router,
+  store,
 });

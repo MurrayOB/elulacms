@@ -43,26 +43,16 @@ export default {
     sidebar: sidebar,
   },
   data: () => ({
-    collections: "",
     errorSnackBar: false,
     success: false,
   }),
-  methods: {
-    getCollections() {
-      const url = "/cms/getCollections";
-      axios
-        .get(url)
-        .then((response) => {
-          this.collections = response.data.collections;
-          this.success = true;
-        })
-        .catch((error) => {
-          this.errorSnackBar = true;
-        });
+  computed: {
+    collections() {
+      return this.$store.getters.getCollections;
     },
   },
   mounted() {
-    this.getCollections();
+    this.$store.dispatch("fetchCollections");
   },
 };
 </script>

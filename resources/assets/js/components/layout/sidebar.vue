@@ -51,8 +51,8 @@
             link
             class="ml-5"
             :to="{
-              name: '/cms/dashboard/collections/' + item.name,
-              params: { example: 'detail.name' },
+              path: '/cms/dashboard/collection/' + item.name,
+              params: { name: item.name },
             }"
           >
             <v-list-item-icon>
