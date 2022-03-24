@@ -20,7 +20,11 @@ Route::get('/cms/login', function(){
 
 Route::get('/cms/dashboard', function(){
     return view('elulacms::layouts.master'); 
-});
+}); 
+
+Route::get('/cms/dashboard/{any}', function(){
+    return view('elulacms::layouts.master'); 
+})->where('any', '.*');
 
 /**
  * API Routes

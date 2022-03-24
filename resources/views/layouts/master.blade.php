@@ -24,13 +24,15 @@
         }
 
     </style>
+    {{-- vue font --}}
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     {{-- js scripts --}}
     <script src="{{ asset('vendor/elulacms/assets/js/app.js') }}" defer></script>
 </head>
 
 <body>
     <div id="app">
-        <example-component></example-component>
+        <app></app>
     </div>
 
     @yield('content')

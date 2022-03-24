@@ -1,0 +1,96 @@
+<template>
+  <v-navigation-drawer app>
+    <v-list>
+      <v-list-item-group color="accent">
+        <v-list-item two-line>
+          <v-list-item-avatar>
+            <img
+              src="https://images.unsplash.com/photo-1647872963304-d81d51243285?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80"
+            />
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title class="text-h6 font-weight-bold"
+              >Elulacms</v-list-item-title
+            >
+            <v-list-item-subtitle>Admin</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider></v-divider>
+        <v-list-item link>
+          <v-list-item-title class="text-h7">Add entry</v-list-item-title>
+          <v-list-item-icon>
+            <v-icon>mdi-pencil-outline</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item link>
+          <v-list-item-title class="text-h7"
+            >Create new collection</v-list-item-title
+          >
+          <v-list-item-icon>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+
+        <v-divider></v-divider>
+        <br />
+        <v-list-group group="/cms/dashboard">
+          <!-- title -->
+          <template v-slot:activator>
+            <v-list-item-icon>
+              <v-icon>mdi-animation-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Collections</v-list-item-title>
+          </template>
+
+          <v-list-item
+            v-for="item in collections"
+            :key="item.name"
+            link
+            class="ml-5"
+            :to="{
+              name: '/cms/dashboard/collections/' + item.name,
+              params: { example: 'detail.name' },
+            }"
+          >
+            <v-list-item-icon>
+              <v-icon color="accent" size="small">mdi-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title class="text-h7">{{
+              item.name
+            }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+        <!-- <v-list-item link to="/cms/dashboard">
+          <v-list-item-icon>
+            <v-icon>mdi-animation-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="text-h7">Collections</v-list-item-title>
+        </v-list-item> -->
+
+        <v-list-item link :to="{ name: 'media' }">
+          <v-list-item-icon>
+            <v-icon>mdi-folder-multiple-image</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="text-h7">Media</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item link :to="{ name: 'settings' }">
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="text-h7">Settings</v-list-item-title>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+  </v-navigation-drawer>
+</template>
+
+<script>
+export default {
+  props: ["collections"],
+  data: () => ({}),
+};
+</script>
