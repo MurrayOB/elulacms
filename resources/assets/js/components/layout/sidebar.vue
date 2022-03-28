@@ -25,7 +25,7 @@
           </v-list-item-icon>
         </v-list-item>
         <v-divider></v-divider>
-        <v-list-item link>
+        <v-list-item link @click="$refs.myDialog.open()">
           <v-list-item-title class="text-h7"
             >Create new collection</v-list-item-title
           >
@@ -85,12 +85,21 @@
         </v-list-item>
       </v-list-item-group>
     </v-list>
+    <!-- Create collection Modal -->
+    <createCollectionModal ref="myDialog"></createCollectionModal>
   </v-navigation-drawer>
 </template>
 
 <script>
+import createCollectionModal from "../pages/dashboard/create-collection-modal";
+
 export default {
+  components: {
+    createCollectionModal: createCollectionModal,
+  },
   props: ["collections"],
-  data: () => ({}),
+  data: () => ({
+    openCreateCollection: false,
+  }),
 };
 </script>

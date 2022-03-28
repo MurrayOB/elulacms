@@ -2,18 +2,80 @@
   <div>
     <div class="mt-4 pl-4">
       <h4>Collection:</h4>
-      <h1>{{ name }}</h1>
-      <p>{{ $store.state.count }}</p>
-      <p>{{ $store.state.name }}</p>
-      <button @click="$store.commit('increment', 10)">click</button>
-      <!-- <p v-if="collections.length == 0">You dont have any collections</p>
-      <p v-for="item in collections" :key="item.name">{{ item.name }}</p> -->
+      <h1>
+        {{ name }}
+        <span
+          ><button>
+            <v-btn color="secondary" icon plain>
+              <v-icon size="16"> mdi-pencil </v-icon>
+            </v-btn>
+          </button></span
+        >
+
+        <v-btn style="float: right" class="mr-4" text color="primary">
+          Add Entry <v-icon>mdi-plus</v-icon></v-btn
+        >
+      </h1>
+
+      <br /><br />
+      <table style="width: 100%" v-if="collection">
+        <!-- Columns -->
+        <tr>
+          <th v-for="(value, name) in collection.data[0]" :key="name">
+            {{ name }}
+          </th>
+        </tr>
+        <!-- Data / Rows -->
+        <tr v-for="value in collection.data" :key="value.id">
+          <td v-for="(val, i) in value" :key="'data-row-' + i">
+            {{ val }}
+          </td>
+          <td>
+            <v-btn text color="red" v-if="value.published">unpublish</v-btn>
+            <v-btn text color="green" v-if="!value.published"> publish </v-btn>
+          </td>
+          <td>
+            <button>
+              <v-btn color="primary" icon plain>
+                <v-icon> mdi-pencil </v-icon>
+              </v-btn>
+            </button>
+          </td>
+          <td>
+            <button>
+              <v-btn color="red" icon plain>
+                <v-icon> mdi-delete </v-icon>
+              </v-btn>
+            </button>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["name"],
+  props: {
+    name: String,
+  },
+  data: () => ({}),
+  computed: {
+    collection() {
+      return this.$store.state.collections.find((el) => {
+        return (el.name = "car");
+      });
+    },
+  },
 };
 </script>
+<style>
+td {
+  border: 1px solid rgb(87, 87, 87);
+}
+
+th,
+td {
+  padding: 5px;
+}
+</style>

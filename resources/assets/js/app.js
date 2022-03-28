@@ -16,11 +16,19 @@ import vuetify from "./vuetify";
 import app from "./components/app";
 import sidebar from "./components/layout/sidebar";
 //pages
+import dashboard from "./components/pages/dashboard";
 import collection from "./components/pages/collection";
 import settings from "./components/pages/settings";
 import media from "./components/pages/media";
+//dashboard Components
+import createCollectionModal from "./components/pages/dashboard/create-collection-modal";
 
 const routes = [
+  {
+    path: "/cms/dashboard",
+    name: "dashboard",
+    component: dashboard,
+  },
   {
     path: "/cms/dashboard/collection/:name",
     name: "collection",
@@ -55,6 +63,7 @@ const main = new Vue({
   components: {
     app: app,
     sidebar: sidebar,
+    createCollectionModal: createCollectionModal,
   },
   router,
   store,

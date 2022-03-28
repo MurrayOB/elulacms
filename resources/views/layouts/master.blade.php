@@ -26,6 +26,8 @@
     </style>
     {{-- vue font --}}
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    {{-- icons --}}
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     {{-- js scripts --}}
     <script src="{{ asset('vendor/elulacms/assets/js/app.js') }}" defer></script>
 </head>

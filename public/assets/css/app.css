@@ -110,3 +110,12 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.mobile-app-bar {
+  display: none !important;
+}
+@media screen and (max-width: 600px) {
+  .mobile-app-bar {
+    display: block !important;
+  }
+}

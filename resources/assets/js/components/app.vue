@@ -1,5 +1,9 @@
 <template>
   <v-app>
+    <v-app-bar app dense class="mobile-app-bar">
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-toolbar-title>Elulacms</v-toolbar-title>
+    </v-app-bar>
     <sidebar app v-bind:collections="collections"></sidebar>
     <v-main>
       <v-container fluid>
@@ -24,14 +28,31 @@
       </template>
     </v-snackbar>
     <!-- error -->
-    <v-snackbar v-model="errorSnackBar">
-      There was an error
-      <template v-slot:action="{ attrs }">
-        <v-btn color="pink" text v-bind="attrs" @click="errorSnackBar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <v-alert
+      v-if="!collectionsLoaded"
+      color="red"
+      dark
+      dense
+      prominent
+      align="center"
+      style="z-index: 99; margin-right: 10%; margin-left: 10%"
+      type="error"
+    >
+      <v-row align="center">
+        <v-col class="grow">
+          Some sort of error has occured. Please check your connection.
+        </v-col>
+        <v-col class="shrink">
+          <v-btn
+            @click="refreshPage()"
+            outlined
+            class="black--text"
+            color="white"
+            >Refresh page<v-icon>mdi-refresh</v-icon></v-btn
+          >
+        </v-col>
+      </v-row>
+    </v-alert>
   </v-app>
 </template>
 
@@ -43,16 +64,26 @@ export default {
     sidebar: sidebar,
   },
   data: () => ({
-    errorSnackBar: false,
     success: false,
   }),
   computed: {
     collections() {
       return this.$store.getters.getCollections;
     },
+    collectionsLoaded() {
+      return this.$store.getters.getCollectionsLoaded;
+    },
   },
   mounted() {
-    this.$store.dispatch("fetchCollections");
+    this.loadCollections();
+  },
+  methods: {
+    refreshPage() {
+      location.reload();
+    },
+    loadCollections() {
+      this.$store.dispatch("fetchCollections");
+    },
   },
 };
 </script>

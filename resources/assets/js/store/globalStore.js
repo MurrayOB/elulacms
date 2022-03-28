@@ -1,10 +1,11 @@
 export default {
   state: {
-    count: 0,
     collections: [],
+    collectionsLoaded: true,
   },
   getters: {
     getCollections: (state) => state.collections,
+    getCollectionsLoaded: (state) => state.collectionsLoaded,
   },
   actions: {
     async fetchCollections({ commit }) {
@@ -13,18 +14,20 @@ export default {
         .get(url)
         .then((res) => {
           commit("setCollections", res.data.collections);
+          commit("collectionsLoaded", true);
         })
         .catch((error) => {
           console.log(error);
+          commit("collectionsLoaded", false);
         });
     },
   },
   mutations: {
-    increment(state, n) {
-      state.count += n;
-    },
     setCollections(state, collections) {
       state.collections = collections;
+    },
+    collectionsLoaded(state, success) {
+      state.collectionsLoaded = success;
     },
   },
 };
