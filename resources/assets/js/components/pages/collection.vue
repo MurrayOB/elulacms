@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div v-if="collection">
     <div class="mt-4 pl-4">
       <h4>Collection:</h4>
+      <p>{{ collection }}</p>
       <h1>
-        {{ name }}
+        {{ collection.name }}
         <span
           ><button>
-            <v-btn color="secondary" icon plain>
+            <v-btn color="gray" icon plain>
               <v-icon size="16"> mdi-pencil </v-icon>
             </v-btn>
           </button></span
@@ -56,9 +57,7 @@
 
 <script>
 export default {
-  props: {
-    name: String,
-  },
+  props: ["name"],
   data: () => ({}),
   computed: {
     collection() {

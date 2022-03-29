@@ -2354,10 +2354,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: {
-    name: String
-  },
+  props: ["name"],
   data: function data() {
     return {};
   },
@@ -2525,6 +2524,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     var fieldTypeImages = {
@@ -2535,25 +2568,48 @@ __webpack_require__.r(__webpack_exports__);
       5: "ri-text"
     };
     return {
+      valid: false,
       dialogRef: "myDialog",
       showDialog: false,
+      submitted: false,
+      success: false,
       items: [{
         name: "Text",
         desc: "Description one",
-        avatar: fieldTypeImages[1]
+        avatar: fieldTypeImages[1],
+        id: 1
       }, {
         name: "Rich Text",
         desc: "Description two",
-        avatar: fieldTypeImages[2]
+        avatar: fieldTypeImages[2],
+        id: 2
       }, {
         name: "Image",
         desc: "Description three",
-        avatar: fieldTypeImages[3]
+        avatar: fieldTypeImages[3],
+        id: 3
       }],
       fieldSettings: [{
         name: "Nullable"
       }, {
         name: "Password"
+      }],
+      collection: {
+        name: "",
+        fields: [{
+          title: "",
+          id: null
+        }]
+      },
+      // Form Rules
+      collectionNameRules: [function (v) {
+        return !!v || "Collection name is required";
+      }],
+      fieldNameRules: [function (v) {
+        return !!v || "Field name is required";
+      }],
+      fieldTypeRules: [function (v) {
+        return !!v || "Field type is required";
       }]
     };
   },
@@ -2563,6 +2619,40 @@ __webpack_require__.r(__webpack_exports__);
     },
     close: function close() {
       this.showDialog = false;
+      this.collection = {
+        name: "",
+        fields: [{
+          title: "",
+          id: null
+        }]
+      };
+    },
+    addField: function addField() {
+      this.collection.fields.push({
+        name: "",
+        type: null
+      });
+    },
+    removeField: function removeField(index) {
+      this.collection.fields.splice(index, 1);
+    },
+    saveCollection: function saveCollection() {
+      var validForm = this.$refs.form.validate();
+      this.valid = validForm;
+      this.submitted = true;
+
+      if (!validForm) {
+        return;
+      }
+
+      this.submitted = false;
+      this.$store.dispatch("createCollection", {
+        collectionName: this.collection.name,
+        fieldsArray: this.collection.fields
+      }); //Must get an API response
+
+      this.$refs.form.resetValidation();
+      this.$refs.form.reset();
     }
   }
 });
@@ -2736,6 +2826,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   actions: {
+    //FETCH COLLECTIONS
     fetchCollections: function fetchCollections(_ref) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         var commit, url;
@@ -2748,6 +2839,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 axios.get(url).then(function (res) {
                   commit("setCollections", res.data.collections);
                   commit("collectionsLoaded", true);
+                  console.log(JSON.parse(JSON.stringify(res.data.collections)));
                 })["catch"](function (error) {
                   console.log(error);
                   commit("collectionsLoaded", false);
@@ -2759,6 +2851,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee);
+      }))();
+    },
+    //CREATE COLLECTION
+    createCollection: function createCollection(commit, _ref2) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var collectionName, fieldsArray, data, url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                collectionName = _ref2.collectionName, fieldsArray = _ref2.fieldsArray;
+                data = {
+                  collectionName: collectionName,
+                  fieldTypes: fieldsArray
+                };
+                url = "/cms/addCollection";
+                axios.post(url, data).then(function (res) {
+                  console.log(res);
+                })["catch"](function (error) {
+                  console.log(error);
+                });
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
       }))();
     }
   },
@@ -2797,10 +2917,10 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use((vuetify__WEBPACK_IMPORTED_MODUL
   theme: {
     themes: {
       light: {
-        primary: "#3f51b5",
-        secondary: "#696969",
-        accent: "#8c9eff",
-        error: "#b71c1c"
+        primary: "#1E88E5",
+        secondary: "#BBDEFB",
+        accent: "#2979FF",
+        error: "#F44336"
       }
     }
   }
@@ -22329,11 +22449,11 @@ var render = function () {
                 },
                 [
                   _vm._v(" "),
-                  _vm._l(_vm.collections, function (item) {
+                  _vm._l(_vm.collections, function (item, index) {
                     return _c(
                       "v-list-item",
                       {
-                        key: item.name,
+                        key: index,
                         staticClass: "ml-5",
                         attrs: {
                           link: "",
@@ -22435,140 +22555,152 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "mt-4 pl-4" }, [
-      _c("h4", [_vm._v("Collection:")]),
-      _vm._v(" "),
-      _c(
-        "h1",
-        [
-          _vm._v("\n      " + _vm._s(_vm.name) + "\n      "),
-          _c("span", [
-            _c(
-              "button",
-              [
-                _c(
-                  "v-btn",
-                  { attrs: { color: "secondary", icon: "", plain: "" } },
-                  [
-                    _c("v-icon", { attrs: { size: "16" } }, [
-                      _vm._v(" mdi-pencil "),
-                    ]),
-                  ],
-                  1
-                ),
-              ],
-              1
-            ),
-          ]),
+  return _vm.collection
+    ? _c("div", [
+        _c("div", { staticClass: "mt-4 pl-4" }, [
+          _c("h4", [_vm._v("Collection:")]),
+          _vm._v(" "),
+          _c("p", [_vm._v(_vm._s(_vm.collection))]),
           _vm._v(" "),
           _c(
-            "v-btn",
-            {
-              staticClass: "mr-4",
-              staticStyle: { float: "right" },
-              attrs: { text: "", color: "primary" },
-            },
+            "h1",
             [
-              _vm._v("\n        Add Entry "),
-              _c("v-icon", [_vm._v("mdi-plus")]),
-            ],
-            1
-          ),
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("br"),
-      _c("br"),
-      _vm._v(" "),
-      _vm.collection
-        ? _c(
-            "table",
-            { staticStyle: { width: "100%" } },
-            [
-              _c(
-                "tr",
-                _vm._l(_vm.collection.data[0], function (value, name) {
-                  return _c("th", { key: name }, [
-                    _vm._v("\n          " + _vm._s(name) + "\n        "),
-                  ])
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _vm._l(_vm.collection.data, function (value) {
-                return _c(
-                  "tr",
-                  { key: value.id },
+              _vm._v("\n      " + _vm._s(_vm.collection.name) + "\n      "),
+              _c("span", [
+                _c(
+                  "button",
                   [
-                    _vm._l(value, function (val, i) {
-                      return _c("td", { key: "data-row-" + i }, [
-                        _vm._v("\n          " + _vm._s(val) + "\n        "),
-                      ])
-                    }),
-                    _vm._v(" "),
                     _c(
-                      "td",
+                      "v-btn",
+                      { attrs: { color: "gray", icon: "", plain: "" } },
                       [
-                        value.published
-                          ? _c("v-btn", { attrs: { text: "", color: "red" } }, [
-                              _vm._v("unpublish"),
-                            ])
-                          : _vm._e(),
-                        _vm._v(" "),
-                        !value.published
-                          ? _c(
-                              "v-btn",
-                              { attrs: { text: "", color: "green" } },
-                              [_vm._v(" publish ")]
-                            )
-                          : _vm._e(),
+                        _c("v-icon", { attrs: { size: "16" } }, [
+                          _vm._v(" mdi-pencil "),
+                        ]),
                       ],
                       1
                     ),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "button",
-                        [
-                          _c(
-                            "v-btn",
-                            {
-                              attrs: { color: "primary", icon: "", plain: "" },
-                            },
-                            [_c("v-icon", [_vm._v(" mdi-pencil ")])],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "button",
-                        [
-                          _c(
-                            "v-btn",
-                            { attrs: { color: "red", icon: "", plain: "" } },
-                            [_c("v-icon", [_vm._v(" mdi-delete ")])],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                    ]),
                   ],
-                  2
-                )
-              }),
+                  1
+                ),
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  staticClass: "mr-4",
+                  staticStyle: { float: "right" },
+                  attrs: { text: "", color: "primary" },
+                },
+                [
+                  _vm._v("\n        Add Entry "),
+                  _c("v-icon", [_vm._v("mdi-plus")]),
+                ],
+                1
+              ),
             ],
-            2
-          )
-        : _vm._e(),
-    ]),
-  ])
+            1
+          ),
+          _vm._v(" "),
+          _c("br"),
+          _c("br"),
+          _vm._v(" "),
+          _vm.collection
+            ? _c(
+                "table",
+                { staticStyle: { width: "100%" } },
+                [
+                  _c(
+                    "tr",
+                    _vm._l(_vm.collection.data[0], function (value, name) {
+                      return _c("th", { key: name }, [
+                        _vm._v("\n          " + _vm._s(name) + "\n        "),
+                      ])
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.collection.data, function (value) {
+                    return _c(
+                      "tr",
+                      { key: value.id },
+                      [
+                        _vm._l(value, function (val, i) {
+                          return _c("td", { key: "data-row-" + i }, [
+                            _vm._v("\n          " + _vm._s(val) + "\n        "),
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          [
+                            value.published
+                              ? _c(
+                                  "v-btn",
+                                  { attrs: { text: "", color: "red" } },
+                                  [_vm._v("unpublish")]
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            !value.published
+                              ? _c(
+                                  "v-btn",
+                                  { attrs: { text: "", color: "green" } },
+                                  [_vm._v(" publish ")]
+                                )
+                              : _vm._e(),
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    color: "primary",
+                                    icon: "",
+                                    plain: "",
+                                  },
+                                },
+                                [_c("v-icon", [_vm._v(" mdi-pencil ")])],
+                                1
+                              ),
+                            ],
+                            1
+                          ),
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { color: "red", icon: "", plain: "" },
+                                },
+                                [_c("v-icon", [_vm._v(" mdi-delete ")])],
+                                1
+                              ),
+                            ],
+                            1
+                          ),
+                        ]),
+                      ],
+                      2
+                    )
+                  }),
+                ],
+                2
+              )
+            : _vm._e(),
+        ]),
+      ])
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -22643,246 +22775,325 @@ var render = function () {
         },
         [
           _c(
-            "v-card",
+            "v-form",
+            {
+              ref: "form",
+              attrs: { id: "create-collection-form", "lazy-validation": "" },
+              model: {
+                value: _vm.valid,
+                callback: function ($$v) {
+                  _vm.valid = $$v
+                },
+                expression: "valid",
+              },
+            },
             [
-              _c("v-card-title", [
-                _c("span", { staticClass: "text-h6" }, [
-                  _vm._v("Create Collection: "),
-                ]),
-              ]),
-              _vm._v(" "),
               _c(
-                "v-card-text",
+                "v-card",
                 [
+                  _c("v-card-title", [
+                    _c("span", { staticClass: "text-h6" }, [
+                      _vm._v("Create Collection: "),
+                    ]),
+                  ]),
+                  _vm._v(" "),
                   _c(
-                    "v-container",
+                    "v-card-text",
                     [
                       _c(
-                        "v-row",
-                        { staticClass: "collection-name" },
+                        "v-container",
                         [
                           _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
+                            "v-row",
+                            { staticClass: "collection-name" },
                             [
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "Collection Name*",
-                                  required: "",
-                                },
-                              }),
-                            ],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-row",
-                        [
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "5" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: { label: "Field Name*", required: "" },
-                              }),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12", md: "6" } },
+                                [
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      rules: _vm.collectionNameRules,
+                                      label: "Collection Name*",
+                                      required: "",
+                                    },
+                                    model: {
+                                      value: _vm.collection.name,
+                                      callback: function ($$v) {
+                                        _vm.$set(_vm.collection, "name", $$v)
+                                      },
+                                      expression: "collection.name",
+                                    },
+                                  }),
+                                ],
+                                1
+                              ),
                             ],
                             1
                           ),
                           _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _c(
+                          _vm._l(
+                            _vm.collection.fields,
+                            function (value, index) {
+                              return _c(
                                 "v-row",
+                                { key: index },
                                 [
                                   _c(
                                     "v-col",
-                                    { attrs: { cols: "12", md: "7" } },
+                                    { attrs: { cols: "12", md: "5" } },
                                     [
-                                      _c("v-select", {
+                                      _c("v-text-field", {
                                         attrs: {
-                                          label: "Select Field Type*",
+                                          label: "Field Name*",
+                                          rules: _vm.fieldNameRules,
                                           required: "",
-                                          items: _vm.items,
-                                          "item-text": "name",
-                                          "item-value": "name",
                                         },
-                                        scopedSlots: _vm._u([
-                                          {
-                                            key: "selection",
-                                            fn: function (data) {
-                                              return [
-                                                _c(
-                                                  "div",
-                                                  _vm._b(
-                                                    {
-                                                      attrs: {
-                                                        "input-value":
-                                                          data.selected,
-                                                        close: "",
-                                                      },
-                                                      on: {
-                                                        click: data.select,
-                                                      },
-                                                    },
-                                                    "div",
-                                                    data.attrs,
-                                                    false
-                                                  ),
-                                                  [
-                                                    _c(
-                                                      "v-avatar",
-                                                      { attrs: { left: "" } },
-                                                      [
-                                                        _c("i", {
-                                                          class:
-                                                            data.item.avatar,
-                                                        }),
-                                                      ]
-                                                    ),
-                                                    _vm._v(
-                                                      "\n                        " +
-                                                        _vm._s(data.item.name) +
-                                                        "\n                      "
-                                                    ),
-                                                  ],
-                                                  1
-                                                ),
-                                              ]
-                                            },
+                                        model: {
+                                          value: value.title,
+                                          callback: function ($$v) {
+                                            _vm.$set(value, "title", $$v)
                                           },
-                                          {
-                                            key: "item",
-                                            fn: function (data) {
-                                              return [
-                                                typeof data.item !== "object"
-                                                  ? [
-                                                      _c(
-                                                        "v-list-item-content",
-                                                        {
-                                                          domProps: {
-                                                            textContent: _vm._s(
-                                                              data.item
-                                                            ),
-                                                          },
-                                                        }
-                                                      ),
-                                                    ]
-                                                  : [
-                                                      _c("v-list-item-avatar", [
-                                                        _c("i", {
-                                                          class:
-                                                            data.item.avatar,
-                                                        }),
-                                                      ]),
-                                                      _vm._v(" "),
-                                                      _c(
-                                                        "v-list-item-content",
-                                                        [
+                                          expression: "value.title",
+                                        },
+                                      }),
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", md: "6" } },
+                                    [
+                                      _c(
+                                        "v-row",
+                                        [
+                                          _c(
+                                            "v-col",
+                                            { attrs: { cols: "12", md: "" } },
+                                            [
+                                              _c("v-select", {
+                                                attrs: {
+                                                  label: "Select Field Type*",
+                                                  required: "",
+                                                  items: _vm.items,
+                                                  "item-text": "name",
+                                                  "item-value": "id",
+                                                  rules: _vm.fieldTypeRules,
+                                                },
+                                                scopedSlots: _vm._u(
+                                                  [
+                                                    {
+                                                      key: "selection",
+                                                      fn: function (data) {
+                                                        return [
                                                           _c(
-                                                            "v-list-item-title",
-                                                            {
-                                                              domProps: {
-                                                                innerHTML:
+                                                            "div",
+                                                            _vm._b(
+                                                              {
+                                                                attrs: {
+                                                                  "input-value":
+                                                                    data.selected,
+                                                                  close: "",
+                                                                },
+                                                                on: {
+                                                                  click:
+                                                                    data.select,
+                                                                },
+                                                              },
+                                                              "div",
+                                                              data.attrs,
+                                                              false
+                                                            ),
+                                                            [
+                                                              _c(
+                                                                "v-avatar",
+                                                                {
+                                                                  attrs: {
+                                                                    left: "",
+                                                                  },
+                                                                },
+                                                                [
+                                                                  _c("i", {
+                                                                    class:
+                                                                      data.item
+                                                                        .avatar,
+                                                                  }),
+                                                                ]
+                                                              ),
+                                                              _vm._v(
+                                                                "\n                          " +
                                                                   _vm._s(
                                                                     data.item
                                                                       .name
-                                                                  ),
-                                                              },
-                                                            }
+                                                                  ) +
+                                                                  "\n                        "
+                                                              ),
+                                                            ],
+                                                            1
                                                           ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "v-list-item-subtitle",
-                                                            {
-                                                              domProps: {
-                                                                innerHTML:
-                                                                  _vm._s(
-                                                                    data.item
-                                                                      .desc
-                                                                  ),
-                                                              },
-                                                            }
-                                                          ),
-                                                        ],
-                                                        1
-                                                      ),
-                                                    ],
-                                              ]
-                                            },
-                                          },
-                                        ]),
-                                      }),
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "4" } },
-                                    [
-                                      _c("v-select", {
-                                        attrs: {
-                                          items: _vm.fieldSettings,
-                                          multiple: "",
-                                          label: "Settings*",
-                                          "item-text": "name",
-                                          "item-value": "name",
-                                        },
-                                        scopedSlots: _vm._u([
-                                          {
-                                            key: "selection",
-                                            fn: function (data) {
-                                              return [
-                                                _c(
-                                                  "div",
-                                                  _vm._b(
-                                                    {
-                                                      attrs: {
-                                                        "input-value":
-                                                          data.selected,
-                                                        close: "",
-                                                      },
-                                                      on: {
-                                                        click: data.select,
+                                                        ]
                                                       },
                                                     },
-                                                    "div",
-                                                    data.attrs,
-                                                    false
-                                                  ),
-                                                  [
-                                                    _vm._v(
-                                                      "\n                        " +
-                                                        _vm._s(data.item.name) +
-                                                        "\n                      "
-                                                    ),
-                                                  ]
+                                                    {
+                                                      key: "item",
+                                                      fn: function (data) {
+                                                        return [
+                                                          [
+                                                            _c(
+                                                              "v-list-item-avatar",
+                                                              [
+                                                                _c("i", {
+                                                                  class:
+                                                                    data.item
+                                                                      .avatar,
+                                                                }),
+                                                              ]
+                                                            ),
+                                                            _vm._v(" "),
+                                                            _c(
+                                                              "v-list-item-content",
+                                                              [
+                                                                _c(
+                                                                  "v-list-item-title",
+                                                                  {
+                                                                    domProps: {
+                                                                      innerHTML:
+                                                                        _vm._s(
+                                                                          data
+                                                                            .item
+                                                                            .name
+                                                                        ),
+                                                                    },
+                                                                  }
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-list-item-subtitle",
+                                                                  {
+                                                                    domProps: {
+                                                                      innerHTML:
+                                                                        _vm._s(
+                                                                          data
+                                                                            .item
+                                                                            .desc
+                                                                        ),
+                                                                    },
+                                                                  }
+                                                                ),
+                                                              ],
+                                                              1
+                                                            ),
+                                                          ],
+                                                        ]
+                                                      },
+                                                    },
+                                                  ],
+                                                  null,
+                                                  true
                                                 ),
-                                              ]
-                                            },
-                                          },
-                                        ]),
-                                      }),
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "1" } },
-                                    [
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          staticClass: "mt-3",
-                                          attrs: { icon: "" },
-                                        },
-                                        [_c("v-icon", [_vm._v("mdi-delete")])],
+                                                model: {
+                                                  value: value.id,
+                                                  callback: function ($$v) {
+                                                    _vm.$set(value, "id", $$v)
+                                                  },
+                                                  expression: "value.id",
+                                                },
+                                              }),
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-col",
+                                            { attrs: { cols: "12", md: "4" } },
+                                            [
+                                              _c("v-select", {
+                                                attrs: {
+                                                  items: _vm.fieldSettings,
+                                                  multiple: "",
+                                                  label: "Settings",
+                                                  "item-text": "name",
+                                                  "item-value": "name",
+                                                },
+                                                scopedSlots: _vm._u(
+                                                  [
+                                                    {
+                                                      key: "selection",
+                                                      fn: function (data) {
+                                                        return [
+                                                          _c(
+                                                            "div",
+                                                            _vm._b(
+                                                              {
+                                                                attrs: {
+                                                                  "input-value":
+                                                                    data.selected,
+                                                                  close: "",
+                                                                },
+                                                                on: {
+                                                                  click:
+                                                                    data.select,
+                                                                },
+                                                              },
+                                                              "div",
+                                                              data.attrs,
+                                                              false
+                                                            ),
+                                                            [
+                                                              _vm._v(
+                                                                "\n                          " +
+                                                                  _vm._s(
+                                                                    data.item
+                                                                      .name
+                                                                  ) +
+                                                                  "\n                        "
+                                                              ),
+                                                            ]
+                                                          ),
+                                                        ]
+                                                      },
+                                                    },
+                                                  ],
+                                                  null,
+                                                  true
+                                                ),
+                                              }),
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-col",
+                                            { attrs: { cols: "12", md: "1" } },
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  staticClass: "mt-3",
+                                                  attrs: {
+                                                    color: "red",
+                                                    icon: "",
+                                                  },
+                                                  on: {
+                                                    click: function ($event) {
+                                                      return _vm.removeField(
+                                                        index
+                                                      )
+                                                    },
+                                                  },
+                                                },
+                                                [
+                                                  _c("v-icon", [
+                                                    _vm._v("mdi-delete"),
+                                                  ]),
+                                                ],
+                                                1
+                                              ),
+                                            ],
+                                            1
+                                          ),
+                                        ],
                                         1
                                       ),
                                     ],
@@ -22890,65 +23101,114 @@ var render = function () {
                                   ),
                                 ],
                                 1
+                              )
+                            }
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { text: "", color: "primary" },
+                                  on: {
+                                    click: function ($event) {
+                                      return _vm.addField()
+                                    },
+                                  },
+                                },
+                                [
+                                  _vm._v("Add another field "),
+                                  _c("v-icon", [_vm._v("mdi-plus")]),
+                                ],
+                                1
                               ),
                             ],
                             1
                           ),
                         ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-row",
-                        [
-                          _c(
-                            "v-btn",
-                            { attrs: { text: "", color: "primary" } },
-                            [
-                              _vm._v("Add another field "),
-                              _c("v-icon", [_vm._v("mdi-plus")]),
-                            ],
-                            1
-                          ),
-                        ],
-                        1
+                        2
                       ),
                     ],
                     1
                   ),
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card-actions",
-                [
-                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _vm.valid == false && _vm.submitted
+                    ? _c(
+                        "v-alert",
+                        {
+                          attrs: {
+                            color: "red",
+                            dark: "",
+                            dense: "",
+                            prominent: "",
+                            align: "center",
+                            type: "error",
+                          },
+                        },
+                        [
+                          _c("v-row", { attrs: { align: "center" } }, [
+                            _vm._v(" This form has errors. "),
+                          ]),
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.success
+                    ? _c(
+                        "v-alert",
+                        {
+                          attrs: {
+                            dense: "",
+                            prominent: "",
+                            align: "center",
+                            type: "success",
+                          },
+                        },
+                        [
+                          _c("v-row", { attrs: { align: "center" } }, [
+                            _vm._v(" Successfully created collection. "),
+                          ]),
+                        ],
+                        1
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
                   _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "blue darken-1", text: "" },
-                      on: {
-                        click: function ($event) {
-                          _vm.showDialog = false
+                    "v-card-actions",
+                    [
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "primary", text: "" },
+                          on: {
+                            click: function ($event) {
+                              return _vm.close()
+                            },
+                          },
                         },
-                      },
-                    },
-                    [_vm._v("\n          Close\n        ")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "blue darken-1", text: "" },
-                      on: {
-                        click: function ($event) {
-                          _vm.dialog = false
+                        [_vm._v(" Cancel ")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "primary", text: "" },
+                          on: {
+                            click: function ($event) {
+                              $event.stopPropagation()
+                              return _vm.saveCollection()
+                            },
+                          },
                         },
-                      },
-                    },
-                    [_vm._v("\n          Save\n        ")]
+                        [_vm._v("\n            Save\n          ")]
+                      ),
+                    ],
+                    1
                   ),
                 ],
                 1

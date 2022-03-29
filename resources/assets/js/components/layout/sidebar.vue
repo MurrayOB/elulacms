@@ -46,8 +46,8 @@
           </template>
 
           <v-list-item
-            v-for="item in collections"
-            :key="item.name"
+            v-for="(item, index) in collections"
+            :key="index"
             link
             class="ml-5"
             :to="{
