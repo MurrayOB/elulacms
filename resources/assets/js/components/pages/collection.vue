@@ -2,7 +2,6 @@
   <div v-if="collection">
     <div class="mt-4 pl-4">
       <h4>Collection:</h4>
-      <p>{{ collection }}</p>
       <h1>
         {{ collection.name }}
         <span
@@ -61,9 +60,7 @@ export default {
   data: () => ({}),
   computed: {
     collection() {
-      return this.$store.state.collections.find((el) => {
-        return (el.name = "car");
-      });
+      return this.$store.getters.singleCollection(this.name);
     },
   },
 };

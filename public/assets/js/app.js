@@ -2149,6 +2149,9 @@ __webpack_require__.r(__webpack_exports__);
     collections: function collections() {
       return this.$store.getters.getCollections;
     },
+    allCollections: function allCollections() {
+      return this.$store.getters.getAllCollections;
+    },
     collectionsLoaded: function collectionsLoaded() {
       return this.$store.getters.getCollectionsLoaded;
     }
@@ -2354,7 +2357,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["name"],
   data: function data() {
@@ -2362,9 +2364,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     collection: function collection() {
-      return this.$store.state.collections.find(function (el) {
-        return el.name = "car";
-      });
+      return this.$store.getters.singleCollection(this.name);
     }
   }
 });
@@ -2626,6 +2626,8 @@ __webpack_require__.r(__webpack_exports__);
           id: null
         }]
       };
+      this.$refs.form.resetValidation();
+      this.$refs.form.reset();
     },
     addField: function addField() {
       this.collection.fields.push({
@@ -2815,7 +2817,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   state: {
     collections: [],
-    collectionsLoaded: true
+    collectionsLoaded: true,
+    allCollections: []
   },
   getters: {
     getCollections: function getCollections(state) {
@@ -2823,6 +2826,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     getCollectionsLoaded: function getCollectionsLoaded(state) {
       return state.collectionsLoaded;
+    },
+    getAllCollections: function getAllCollections(state) {
+      return state.allCollections;
+    },
+    singleCollection: function singleCollection(state, getters) {
+      return function (name) {
+        return getters.getCollections.find(function (el) {
+          return el.name == name;
+        });
+      };
     }
   },
   actions: {
@@ -2837,12 +2850,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 commit = _ref.commit;
                 url = "/cms/getCollections";
                 axios.get(url).then(function (res) {
-                  commit("setCollections", res.data.collections);
+                  commit("setCollections", JSON.parse(JSON.stringify(res.data.collections)));
+                  commit("setAllCollections", JSON.parse(JSON.stringify(res.data.collections)));
                   commit("collectionsLoaded", true);
-                  console.log(JSON.parse(JSON.stringify(res.data.collections)));
                 })["catch"](function (error) {
                   console.log(error);
-                  commit("collectionsLoaded", false);
                 });
 
               case 3:
@@ -2869,6 +2881,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 url = "/cms/addCollection";
                 axios.post(url, data).then(function (res) {
                   console.log(res);
+                  dispatch("fetchCollections");
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -2884,10 +2897,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mutations: {
     setCollections: function setCollections(state, collections) {
+      console.log(collections);
       state.collections = collections;
     },
     collectionsLoaded: function collectionsLoaded(state, success) {
       state.collectionsLoaded = success;
+    },
+    setAllCollections: function setAllCollections(state, allCollections) {
+      state.allCollections = allCollections;
     }
   }
 });
@@ -22192,7 +22209,7 @@ var render = function () {
         1
       ),
       _vm._v(" "),
-      _c("sidebar", { attrs: { app: "", collections: _vm.collections } }),
+      _c("sidebar", { attrs: { app: "", collections: _vm.allCollections } }),
       _vm._v(" "),
       _c(
         "v-main",
@@ -22559,8 +22576,6 @@ var render = function () {
     ? _c("div", [
         _c("div", { staticClass: "mt-4 pl-4" }, [
           _c("h4", [_vm._v("Collection:")]),
-          _vm._v(" "),
-          _c("p", [_vm._v(_vm._s(_vm.collection))]),
           _vm._v(" "),
           _c(
             "h1",

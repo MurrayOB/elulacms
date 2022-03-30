@@ -206,6 +206,8 @@ export default {
         name: "",
         fields: [{ title: "", id: null }],
       };
+      this.$refs.form.resetValidation();
+      this.$refs.form.reset();
     },
     addField() {
       this.collection.fields.push({ name: "", type: null });

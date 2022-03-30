@@ -2,10 +2,15 @@ export default {
   state: {
     collections: [],
     collectionsLoaded: true,
+    allCollections: [],
   },
   getters: {
     getCollections: (state) => state.collections,
     getCollectionsLoaded: (state) => state.collectionsLoaded,
+    getAllCollections: (state) => state.allCollections,
+    singleCollection: (state, getters) => (name) => {
+      return getters.getCollections.find((el) => el.name == name);
+    },
   },
   actions: {
     //FETCH COLLECTIONS
@@ -14,13 +19,18 @@ export default {
       axios
         .get(url)
         .then((res) => {
-          commit("setCollections", res.data.collections);
+          commit(
+            "setCollections",
+            JSON.parse(JSON.stringify(res.data.collections))
+          );
+          commit(
+            "setAllCollections",
+            JSON.parse(JSON.stringify(res.data.collections))
+          );
           commit("collectionsLoaded", true);
-          console.log(JSON.parse(JSON.stringify(res.data.collections)));
         })
         .catch((error) => {
           console.log(error);
-          commit("collectionsLoaded", false);
         });
     },
     //CREATE COLLECTION
@@ -34,6 +44,7 @@ export default {
         .post(url, data)
         .then(function (res) {
           console.log(res);
+          dispatch("fetchCollections");
         })
         .catch(function (error) {
           console.log(error);
@@ -42,10 +53,14 @@ export default {
   },
   mutations: {
     setCollections(state, collections) {
+      console.log(collections);
       state.collections = collections;
     },
     collectionsLoaded(state, success) {
       state.collectionsLoaded = success;
+    },
+    setAllCollections(state, allCollections) {
+      state.allCollections = allCollections;
     },
   },
 };
