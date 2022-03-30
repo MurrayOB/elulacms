@@ -6,7 +6,12 @@
         {{ collection.name }}
         <span
           ><button>
-            <v-btn color="gray" icon plain>
+            <v-btn
+              color="gray"
+              icon
+              plain
+              @click="$refs.editCollectionDialog.open(collection.id)"
+            >
               <v-icon size="16"> mdi-pencil </v-icon>
             </v-btn>
           </button></span
@@ -51,11 +56,18 @@
         </tr>
       </table>
     </div>
+    <!-- edit collection Modal -->
+    <editCollectionModal ref="editCollectionDialog"></editCollectionModal>
   </div>
 </template>
 
 <script>
+import editCollectionModal from "../pages/dashboard/edit-collection-modal";
+
 export default {
+  components: {
+    editCollectionModal,
+  },
   props: ["name"],
   data: () => ({}),
   computed: {

@@ -22,6 +22,7 @@ import settings from "./components/pages/settings";
 import media from "./components/pages/media";
 //dashboard Components
 import createCollectionModal from "./components/pages/dashboard/create-collection-modal";
+import editCollectionModal from "./components/pages/dashboard/edit-collection-modal";
 
 const routes = [
   {

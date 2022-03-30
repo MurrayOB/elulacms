@@ -4,7 +4,7 @@
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title>Elulacms</v-toolbar-title>
     </v-app-bar>
-    <sidebar app v-bind:collections="allCollections"></sidebar>
+    <sidebar app v-bind:collections="collections"></sidebar>
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -69,9 +69,6 @@ export default {
   computed: {
     collections() {
       return this.$store.getters.getCollections;
-    },
-    allCollections() {
-      return this.$store.getters.getAllCollections;
     },
     collectionsLoaded() {
       return this.$store.getters.getCollectionsLoaded;

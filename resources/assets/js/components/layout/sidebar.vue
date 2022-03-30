@@ -63,12 +63,6 @@
             }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
-        <!-- <v-list-item link to="/cms/dashboard">
-          <v-list-item-icon>
-            <v-icon>mdi-animation-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="text-h7">Collections</v-list-item-title>
-        </v-list-item> -->
 
         <v-list-item link :to="{ name: 'media' }">
           <v-list-item-icon>

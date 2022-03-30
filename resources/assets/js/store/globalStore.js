@@ -2,14 +2,15 @@ export default {
   state: {
     collections: [],
     collectionsLoaded: true,
-    allCollections: [],
   },
   getters: {
     getCollections: (state) => state.collections,
     getCollectionsLoaded: (state) => state.collectionsLoaded,
-    getAllCollections: (state) => state.allCollections,
     singleCollection: (state, getters) => (name) => {
       return getters.getCollections.find((el) => el.name == name);
+    },
+    singleCollectionById: (state, getters) => (id) => {
+      return getters.getCollections.find((el) => el.id === id);
     },
   },
   actions: {
@@ -19,14 +20,7 @@ export default {
       axios
         .get(url)
         .then((res) => {
-          commit(
-            "setCollections",
-            JSON.parse(JSON.stringify(res.data.collections))
-          );
-          commit(
-            "setAllCollections",
-            JSON.parse(JSON.stringify(res.data.collections))
-          );
+          commit("setCollections", res.data.collections);
           commit("collectionsLoaded", true);
         })
         .catch((error) => {
@@ -34,7 +28,7 @@ export default {
         });
     },
     //CREATE COLLECTION
-    async createCollection(commit, { collectionName, fieldsArray }) {
+    async createCollection({ dispatch }, { collectionName, fieldsArray }) {
       const data = {
         collectionName: collectionName,
         fieldTypes: fieldsArray,
@@ -44,6 +38,26 @@ export default {
         .post(url, data)
         .then(function (res) {
           console.log(res);
+          dispatch("fetchCollections");
+          router.push({
+            name: "collection",
+            params: { name: data.collectionName },
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    //DELETE COLLECTION
+    async deleteCollection({ dispatch }, { collectionId }) {
+      const url = "/cms/deleteCollection";
+      axios
+        .post(url, {
+          id: collectionId,
+        })
+        .then(function (res) {
+          console.log(res);
+          //Route to another place
           dispatch("fetchCollections");
         })
         .catch(function (error) {
@@ -58,9 +72,6 @@ export default {
     },
     collectionsLoaded(state, success) {
       state.collectionsLoaded = success;
-    },
-    setAllCollections(state, allCollections) {
-      state.allCollections = allCollections;
     },
   },
 };
