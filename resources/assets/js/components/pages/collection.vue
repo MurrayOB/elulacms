@@ -55,7 +55,17 @@
           </td>
           <td>
             <button>
-              <v-btn color="primary" icon plain>
+              <v-btn
+                link
+                :to="{
+                  path:
+                    '/cms/dashboard/' + collection.name + '/edit/' + value.id,
+                  params: { name: collection.name, id: value.id },
+                }"
+                color="primary"
+                icon
+                plain
+              >
                 <v-icon> mdi-pencil </v-icon>
               </v-btn>
             </button>

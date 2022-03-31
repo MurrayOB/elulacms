@@ -1,58 +1,20 @@
 <template>
   <div>
+    <v-col>
+      <v-btn
+        link
+        :to="{
+          path: '/cms/dashboard/collection/' + name,
+        }"
+        text
+        color="primary"
+      >
+        <v-icon left>mdi-chevron-left</v-icon>back</v-btn
+      >
+    </v-col>
     <h2 class="ml-4" v-if="!editEntry">
       <span class="font-weight-light">Add entry to</span> {{ name }}
     </h2>
-    <v-row>
-      <br />
-      <v-col>
-        <v-btn
-          link
-          :to="{
-            path: '/cms/dashboard/collection/' + name,
-          }"
-          text
-          color="primary"
-        >
-          <v-icon left>mdi-chevron-left</v-icon>back</v-btn
-        >
-      </v-col>
-      <div v-if="editEntry">
-        <v-col>
-          <v-btn
-            link
-            :to="{
-              path: '/cms/dashboard/collection/' + name,
-            }"
-            text
-            color="primary float-right"
-          >
-            unpublish</v-btn
-          >
-          <v-btn
-            link
-            :to="{
-              path: '/cms/dashboard/collection/' + name,
-            }"
-            text
-            color="success float-right"
-          >
-            publish</v-btn
-          >
-          <v-btn
-            link
-            :to="{
-              path: '/cms/dashboard/collection/' + name,
-            }"
-            text
-            color="error float-right"
-          >
-            delete entry</v-btn
-          >
-        </v-col>
-      </div>
-      <br />
-    </v-row>
     <br />
     <div v-if="collection" class="ml-2">
       <v-form id="entry-form" ref="form" lazy-validation v-model="formValid">

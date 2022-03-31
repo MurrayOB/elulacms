@@ -24,6 +24,7 @@ import media from "./components/pages/media";
 import createCollectionModal from "./components/pages/dashboard/create-collection-modal";
 import editCollectionModal from "./components/pages/dashboard/edit-collection-modal";
 import addEntry from "./components/pages/add-entry";
+import editEntry from "./components/pages/edit-entry";
 
 const routes = [
   {
@@ -35,6 +36,12 @@ const routes = [
     path: "/cms/dashboard/collection/:name",
     name: "collection",
     component: collection,
+    props: true,
+  },
+  {
+    path: "/cms/dashboard/:name/edit/:id",
+    name: "edit-entry",
+    component: editEntry,
     props: true,
   },
   {
