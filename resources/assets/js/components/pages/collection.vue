@@ -17,12 +17,26 @@
           </button></span
         >
 
-        <v-btn style="float: right" class="mr-4" text color="primary">
-          Add Entry <v-icon>mdi-plus</v-icon></v-btn
+        <v-btn
+          link
+          :to="{
+            path: '/cms/dashboard/' + collection.name + '/add-entry',
+            params: { name: collection.name },
+          }"
+          class="mr-4"
+          text
+          color="primary"
+        >
+          Add Entry <v-icon right>mdi-plus</v-icon></v-btn
         >
       </h1>
 
       <br /><br />
+      <p v-if="!collection.data.length">You have no data.</p>
+      <p v-if="collection.data.length">
+        Fetched
+        <span style="color: blue">{{ collection.data.length }}</span> rows.
+      </p>
       <table style="width: 100%" v-if="collection">
         <!-- Columns -->
         <tr>

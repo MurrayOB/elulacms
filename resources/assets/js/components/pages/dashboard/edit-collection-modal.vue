@@ -27,6 +27,12 @@
               </v-col>
             </v-row>
           </v-card-title>
+          <div>
+            <span
+              ><span class="text-h7 pl-3 font-weight-bold">api: </span
+              >{{ collection.name }}</span
+            >
+          </div>
           <v-card-text>
             <v-container>
               <v-row class="collection-name">
@@ -120,7 +126,8 @@
                     <v-col cols="12" md="1"
                       ><v-btn
                         color="red"
-                        @click="removeField(index)"
+                        style="opacity: 0.8"
+                        @click="removeField(index, value.id)"
                         class="mt-3"
                         icon
                         ><v-icon>mdi-delete</v-icon></v-btn
@@ -152,11 +159,12 @@
           <v-alert v-if="success" dense prominent align="center" type="success">
             <v-row align="center"> Successfully created collection. </v-row>
           </v-alert>
+          <!-- Actions -->
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()"> Cancel </v-btn>
             <v-btn color="primary" text @click.stop="saveCollection()">
-              Save
+              Update
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -203,6 +211,8 @@ export default {
       showDialog: false,
       submitted: false,
       success: false,
+      removedFields: [],
+      originalCollectionName: "",
       items: [
         {
           name: "Text",
@@ -238,6 +248,7 @@ export default {
       this.collection = JSON.parse(
         JSON.stringify(this.$store.getters.singleCollectionById(id))
       );
+      this.originalCollectionName = this.collection.name;
     },
     //Delete collection
     deleteCollection() {
@@ -255,23 +266,33 @@ export default {
     addField() {
       this.collection.fields.push({ name: "", type: null, id: 0 });
     },
-    removeField(index) {
+    removeField(index, id) {
       this.collection.fields.splice(index, 1);
+      if (id == 0) {
+        return;
+      }
+      this.removedFields.push({ fieldID: id });
     },
     saveCollection() {
+      //validation
       const validForm = this.$refs.form.validate();
       this.valid = validForm;
       this.submitted = true;
-
       if (!validForm) {
         return;
       }
-
       this.submitted = false;
 
-      this.$store.dispatch("createCollection", {
-        collectionName: this.collection.name,
-        fieldsArray: this.collection.fields,
+      const payload = {
+        collectionID: this.collection.id,
+        originalCollectionName: this.originalCollectionName,
+        updatedCollectionName: this.collection.name,
+        updatedCollection: JSON.parse(JSON.stringify(this.collection.fields)),
+        removedItems: this.removedFields,
+      };
+
+      this.$store.dispatch("updateCollection", {
+        payload: payload,
       });
 
       //Must get an API response

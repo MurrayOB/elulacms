@@ -23,6 +23,7 @@ import media from "./components/pages/media";
 //dashboard Components
 import createCollectionModal from "./components/pages/dashboard/create-collection-modal";
 import editCollectionModal from "./components/pages/dashboard/edit-collection-modal";
+import addEntry from "./components/pages/add-entry";
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
     path: "/cms/dashboard/collection/:name",
     name: "collection",
     component: collection,
+    props: true,
+  },
+  {
+    path: "/cms/dashboard/:name/add-entry",
+    name: "add-entry",
+    component: addEntry,
     props: true,
   },
   {

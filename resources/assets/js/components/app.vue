@@ -1,9 +1,5 @@
 <template>
   <v-app>
-    <v-app-bar app dense class="mobile-app-bar">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-toolbar-title>Elulacms</v-toolbar-title>
-    </v-app-bar>
     <sidebar app v-bind:collections="collections"></sidebar>
     <v-main>
       <v-container fluid>

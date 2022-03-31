@@ -2,14 +2,16 @@
 
 //FOCUS ONLY ON THE CMS FOR NOW (complete basic strapi capabilities)
 
-1. Convert / investigate FRONTEND to VUEJS (VUEJS FRONTEND)
-2. Handle the image / images upload / field / media library
-3. Allow when creating fields to choose nullable, required, default value
+1. Add entry
+1. 2.Fix table rows and buttons
+1. 3. Table rows pagination
+1. Handle the image / images upload / field / media library
+1. Allow when creating fields to choose nullable, required, default value
 
-4. Form validations and backend validations (VALIDATION)
-5. Handle authenticaion / auth settings (AUTHENTICATION)
-6. Add user roles to settings page
-7. Caching
+1. Form validations and backend validations (VALIDATION)
+1. Handle authenticaion / auth settings (AUTHENTICATION)
+1. Add user roles to settings page
+1. Caching
 
 ## Future TO DOs:
 

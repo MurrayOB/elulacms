@@ -22,8 +22,10 @@ export default {
         .then((res) => {
           commit("setCollections", res.data.collections);
           commit("collectionsLoaded", true);
+          console.log(JSON.parse(JSON.stringify(res.data.collections)));
         })
         .catch((error) => {
+          commit("collectionsLoaded", false);
           console.log(error);
         });
     },
@@ -64,10 +66,34 @@ export default {
           console.log(error);
         });
     },
+    //UPDATE COLLECTION
+    async updateCollection({ dispatch }, { payload }) {
+      const url = "/cms/updateCollection";
+      axios
+        .post(url, payload)
+        .then(function (res) {
+          console.log(res);
+          dispatch("fetchCollections");
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+    //ADD ENTRY
+    async addEntry({ dispatch }, { payload }) {
+      axios
+        .post("/cms/addEntry", payload)
+        .then(function (res) {
+          console.log(res);
+          dispatch("fetchCollections");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
   mutations: {
     setCollections(state, collections) {
-      console.log(collections);
       state.collections = collections;
     },
     collectionsLoaded(state, success) {
