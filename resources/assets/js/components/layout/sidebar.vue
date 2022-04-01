@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-app-bar color="primary" app dense class="mobile-app-bar">
-      <v-toolbar-title class="white--text">Elulacms</v-toolbar-title>
+    <v-app-bar color="white" app dense class="mobile-app-bar" elevation="1">
+      <v-toolbar-title class="white--black">Elulacms</v-toolbar-title>
       <v-app-bar-nav-icon
-        color="white"
+        color="black"
         @click.stop="drawer = !drawer"
       ></v-app-bar-nav-icon>
     </v-app-bar>

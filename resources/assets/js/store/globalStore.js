@@ -91,6 +91,39 @@ export default {
           console.log(error);
         });
     },
+    //UPDATE ENTRY
+    async updateEntry({ dispatch }, { id, entry, collectionName }) {
+      const data = {
+        id: id,
+        entry: entry,
+        collectionName: collectionName,
+      };
+      axios
+        .post("/cms/updateEntry", data)
+        .then(function (res) {
+          console.log(res);
+          dispatch("fetchCollections");
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+    //DELETE ENTRY
+    async deleteEntry({ dispatch }, { id, collectionName }) {
+      const data = {
+        id: id,
+        collectionName: collectionName,
+      };
+      axios
+        .post("/cms/deleteEntry", data)
+        .then(function (res) {
+          console.log(res);
+          dispatch("fetchCollections");
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
   },
   mutations: {
     setCollections(state, collections) {

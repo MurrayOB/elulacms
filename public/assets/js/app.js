@@ -3211,26 +3211,102 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["name", "id"],
   data: function data() {
-    return {};
+    return {
+      published: null,
+      formValid: true,
+      deleteDialog: false
+    };
   },
-  methods: {},
+  methods: {
+    deleteEntry: function deleteEntry() {
+      this.$store.dispatch("deleteEntry", {
+        id: this.id,
+        collectionName: this.name
+      });
+      this.$router.push("/cms/dashboard/collection/" + this.name);
+    },
+    updateEntry: function updateEntry() {
+      var validForm = this.$refs.form.validate();
+
+      if (!validForm) {
+        console.log("Invalid Form");
+        return;
+      }
+
+      this.entry.published = this.published;
+      this.$store.dispatch("updateEntry", {
+        id: this.id,
+        entry: this.entry,
+        collectionName: this.name
+      });
+      this.$router.push("/cms/dashboard/collection/" + this.name);
+    }
+  },
   computed: {
     entry: function entry() {
       var _this$$store$getters$,
+          _this$$store$getters$2,
           _this = this;
 
-      return (_this$$store$getters$ = this.$store.getters.singleCollection(this.name)) === null || _this$$store$getters$ === void 0 ? void 0 : _this$$store$getters$.data.find(function (p) {
+      return (_this$$store$getters$ = this.$store.getters.singleCollection(this.name)) !== null && _this$$store$getters$ !== void 0 && _this$$store$getters$.data ? JSON.parse(JSON.stringify((_this$$store$getters$2 = this.$store.getters.singleCollection(this.name)) === null || _this$$store$getters$2 === void 0 ? void 0 : _this$$store$getters$2.data.find(function (p) {
         return p.id == _this.id;
-      });
+      }))) : [];
     },
     entryFields: function entryFields() {
-      var _this$$store$getters$2;
+      var _this$$store$getters$3;
 
-      return (_this$$store$getters$2 = this.$store.getters.singleCollection(this.name)) === null || _this$$store$getters$2 === void 0 ? void 0 : _this$$store$getters$2.fields;
+      return (_this$$store$getters$3 = this.$store.getters.singleCollection(this.name)) === null || _this$$store$getters$3 === void 0 ? void 0 : _this$$store$getters$3.fields;
     }
+  },
+  watch: {
+    entry: function entry(newValue) {
+      this.published = newValue.published;
+    }
+  },
+  mounted: function mounted() {
+    this.entry ? this.published = this.entry.published : null;
   }
 });
 
@@ -3574,6 +3650,65 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee5);
+      }))();
+    },
+    //UPDATE ENTRY
+    updateEntry: function updateEntry(_ref10, _ref11) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6() {
+        var dispatch, id, entry, collectionName, data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                dispatch = _ref10.dispatch;
+                id = _ref11.id, entry = _ref11.entry, collectionName = _ref11.collectionName;
+                data = {
+                  id: id,
+                  entry: entry,
+                  collectionName: collectionName
+                };
+                axios.post("/cms/updateEntry", data).then(function (res) {
+                  console.log(res);
+                  dispatch("fetchCollections");
+                })["catch"](function (err) {
+                  console.log(err);
+                });
+
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    //DELETE ENTRY
+    deleteEntry: function deleteEntry(_ref12, _ref13) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7() {
+        var dispatch, id, collectionName, data;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                dispatch = _ref12.dispatch;
+                id = _ref13.id, collectionName = _ref13.collectionName;
+                data = {
+                  id: id,
+                  collectionName: collectionName
+                };
+                axios.post("/cms/deleteEntry", data).then(function (res) {
+                  console.log(res);
+                  dispatch("fetchCollections");
+                })["catch"](function (err) {
+                  console.log(err);
+                });
+
+              case 4:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
       }))();
     }
   },
@@ -23312,15 +23447,15 @@ var render = function () {
         "v-app-bar",
         {
           staticClass: "mobile-app-bar",
-          attrs: { color: "primary", app: "", dense: "" },
+          attrs: { color: "white", app: "", dense: "", elevation: "1" },
         },
         [
-          _c("v-toolbar-title", { staticClass: "white--text" }, [
+          _c("v-toolbar-title", { staticClass: "white--black" }, [
             _vm._v("Elulacms"),
           ]),
           _vm._v(" "),
           _c("v-app-bar-nav-icon", {
-            attrs: { color: "white" },
+            attrs: { color: "black" },
             on: {
               click: function ($event) {
                 $event.stopPropagation()
@@ -23840,98 +23975,101 @@ var render = function () {
                       0
                     ),
                     _vm._v(" "),
-                    _vm._l(_vm.collection.data, function (value) {
-                      return _c(
-                        "tr",
-                        { key: value.id },
-                        [
-                          _vm._l(value, function (val, i) {
-                            return _c("td", { key: "data-row-" + i }, [
-                              _vm._v(
-                                "\n          " + _vm._s(val) + "\n        "
-                              ),
-                            ])
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
-                              value.published
-                                ? _c(
-                                    "v-btn",
-                                    { attrs: { text: "", color: "red" } },
-                                    [_vm._v("unpublish")]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              !value.published
-                                ? _c(
-                                    "v-btn",
-                                    { attrs: { text: "", color: "green" } },
-                                    [_vm._v(" publish ")]
-                                  )
-                                : _vm._e(),
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c("td", [
+                    _vm._l(
+                      _vm.collection.data.slice().reverse(),
+                      function (value) {
+                        return _c(
+                          "tr",
+                          { key: value.id },
+                          [
+                            _vm._l(value, function (val, i) {
+                              return _c("td", { key: "data-row-" + i }, [
+                                _vm._v(
+                                  "\n          " + _vm._s(val) + "\n        "
+                                ),
+                              ])
+                            }),
+                            _vm._v(" "),
                             _c(
-                              "button",
+                              "td",
                               [
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: {
-                                      link: "",
-                                      to: {
-                                        path:
-                                          "/cms/dashboard/" +
-                                          _vm.collection.name +
-                                          "/edit/" +
-                                          value.id,
-                                        params: {
-                                          name: _vm.collection.name,
-                                          id: value.id,
+                                value.published
+                                  ? _c(
+                                      "v-btn",
+                                      { attrs: { text: "", color: "red" } },
+                                      [_vm._v("unpublish")]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                !value.published
+                                  ? _c(
+                                      "v-btn",
+                                      { attrs: { text: "", color: "green" } },
+                                      [_vm._v(" publish ")]
+                                    )
+                                  : _vm._e(),
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "button",
+                                [
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        link: "",
+                                        to: {
+                                          path:
+                                            "/cms/dashboard/" +
+                                            _vm.collection.name +
+                                            "/edit/" +
+                                            value.id,
+                                          params: {
+                                            name: _vm.collection.name,
+                                            id: value.id,
+                                          },
                                         },
+                                        color: "primary",
+                                        icon: "",
+                                        plain: "",
                                       },
-                                      color: "primary",
-                                      icon: "",
-                                      plain: "",
                                     },
-                                  },
-                                  [_c("v-icon", [_vm._v(" mdi-pencil ")])],
-                                  1
-                                ),
-                              ],
-                              1
-                            ),
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "button",
-                              [
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: {
-                                      color: "red",
-                                      icon: "",
-                                      plain: "",
+                                    [_c("v-icon", [_vm._v(" mdi-pencil ")])],
+                                    1
+                                  ),
+                                ],
+                                1
+                              ),
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "button",
+                                [
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      attrs: {
+                                        color: "red",
+                                        icon: "",
+                                        plain: "",
+                                      },
                                     },
-                                  },
-                                  [_c("v-icon", [_vm._v(" mdi-delete ")])],
-                                  1
-                                ),
-                              ],
-                              1
-                            ),
-                          ]),
-                        ],
-                        2
-                      )
-                    }),
+                                    [_c("v-icon", [_vm._v(" mdi-delete ")])],
+                                    1
+                                  ),
+                                ],
+                                1
+                              ),
+                            ]),
+                          ],
+                          2
+                        )
+                      }
+                    ),
                   ],
                   2
                 )
@@ -25118,59 +25256,216 @@ var render = function () {
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
       _c(
         "v-row",
         [
           _c("v-col", [
-            _c("h2", { staticClass: "ml-4" }, [_vm._v("Edit Entry")]),
+            _c("h2", { staticClass: "ml-4 font-weight-light" }, [
+              _vm._v("Edit Entry"),
+            ]),
+            _vm._v(" "),
+            _c("br"),
           ]),
           _vm._v(" "),
-          _c(
-            "v-col",
+          _vm.entry
+            ? _c(
+                "v-col",
+                [
+                  _vm.published
+                    ? _c(
+                        "v-btn",
+                        {
+                          attrs: { text: "", color: "primary float-right" },
+                          on: {
+                            click: function ($event) {
+                              _vm.published = !_vm.published
+                            },
+                          },
+                        },
+                        [_vm._v("\n        unpublish")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.published
+                    ? _c(
+                        "v-btn",
+                        {
+                          attrs: { text: "", color: "success float-right" },
+                          on: {
+                            click: function ($event) {
+                              _vm.published = !_vm.published
+                            },
+                          },
+                        },
+                        [_vm._v("\n        publish")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { text: "", color: "error float-right" },
+                      on: {
+                        click: function ($event) {
+                          _vm.deleteDialog = true
+                        },
+                      },
+                    },
+                    [_vm._v("\n        delete entry")]
+                  ),
+                ],
+                1
+              )
+            : _vm._e(),
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-form",
+        {
+          ref: "form",
+          attrs: { id: "editEntryForm" },
+          model: {
+            value: _vm.formValid,
+            callback: function ($$v) {
+              _vm.formValid = $$v
+            },
+            expression: "formValid",
+          },
+        },
+        _vm._l(_vm.entryFields, function (field, index) {
+          return _c(
+            "div",
+            { key: index },
             [
-              _c(
-                "v-btn",
-                {
-                  attrs: {
-                    link: "",
-                    to: {
-                      path: "/cms/dashboard/collection/" + _vm.name,
-                    },
-                    text: "",
-                    color: "primary float-right",
-                  },
-                },
-                [_vm._v("\n        unpublish")]
-              ),
+              field.type === 1
+                ? _c(
+                    "v-col",
+                    { attrs: { cols: "12", sm: "12", md: "4" } },
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          outlined: "",
+                          label: field.name,
+                          placeholder: field.name,
+                        },
+                        model: {
+                          value: _vm.entry[field.name],
+                          callback: function ($$v) {
+                            _vm.$set(_vm.entry, field.name, $$v)
+                          },
+                          expression: "entry[field.name]",
+                        },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              field.type === 2
+                ? _c(
+                    "v-col",
+                    { attrs: { cols: "12", sm: "12", md: "6" } },
+                    [
+                      _c("v-textarea", {
+                        attrs: {
+                          outlined: "",
+                          label: field.name,
+                          placeholder: field.name,
+                        },
+                        model: {
+                          value: _vm.entry[field.name],
+                          callback: function ($$v) {
+                            _vm.$set(_vm.entry, field.name, $$v)
+                          },
+                          expression: "entry[field.name]",
+                        },
+                      }),
+                    ],
+                    1
+                  )
+                : _vm._e(),
+            ],
+            1
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _vm.entryFields && _vm.entry
+        ? _c(
+            "v-btn",
+            {
+              staticClass: "ml-4",
+              attrs: { outlined: "", color: "primary" },
+              on: { click: _vm.updateEntry },
+            },
+            [_vm._v("update entry")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", "max-width": "290" },
+          model: {
+            value: _vm.deleteDialog,
+            callback: function ($$v) {
+              _vm.deleteDialog = $$v
+            },
+            expression: "deleteDialog",
+          },
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", { staticClass: "text-h5" }, [
+                _vm._v(" Are you sure?"),
+              ]),
+              _vm._v(" "),
+              _c("v-card-text", [
+                _vm._v(
+                  "Are you sure you want to delete this entry? This cannot be undone\n        once deleted."
+                ),
+              ]),
               _vm._v(" "),
               _c(
-                "v-btn",
-                {
-                  attrs: {
-                    link: "",
-                    to: {
-                      path: "/cms/dashboard/collection/" + _vm.name,
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "primary", text: "" },
+                      on: {
+                        click: function ($event) {
+                          _vm.deleteDialog = false
+                        },
+                      },
                     },
-                    text: "",
-                    color: "success float-right",
-                  },
-                },
-                [_vm._v("\n        publish")]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                {
-                  attrs: {
-                    link: "",
-                    to: {
-                      path: "/cms/dashboard/collection/" + _vm.name,
+                    [_vm._v("\n          Cancel\n        ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "red darken-1", text: "" },
+                      on: {
+                        click: function ($event) {
+                          _vm.deleteEntry()
+                          _vm.deleteDialog = false
+                        },
+                      },
                     },
-                    text: "",
-                    color: "error float-right",
-                  },
-                },
-                [_vm._v("\n        delete entry")]
+                    [_vm._v("\n          Yes I'm sure\n        ")]
+                  ),
+                ],
+                1
               ),
             ],
             1
@@ -25178,39 +25473,8 @@ var render = function () {
         ],
         1
       ),
-      _vm._v(" "),
-      _vm._l(_vm.entryFields, function (field, index) {
-        return _c(
-          "div",
-          { key: index },
-          [
-            _c(
-              "v-col",
-              { attrs: { cols: "12", sm: "12", md: "4" } },
-              [
-                _c("v-text-field", {
-                  attrs: {
-                    outlined: "",
-                    label: field.name,
-                    placeholder: field.name,
-                  },
-                  model: {
-                    value: _vm.entry[field.name],
-                    callback: function ($$v) {
-                      _vm.$set(_vm.entry, field.name, $$v)
-                    },
-                    expression: "entry[field.name]",
-                  },
-                }),
-              ],
-              1
-            ),
-          ],
-          1
-        )
-      }),
     ],
-    2
+    1
   )
 }
 var staticRenderFns = []

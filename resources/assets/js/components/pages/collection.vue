@@ -45,7 +45,7 @@
           </th>
         </tr>
         <!-- Data / Rows -->
-        <tr v-for="value in collection.data" :key="value.id">
+        <tr v-for="value in collection.data.slice().reverse()" :key="value.id">
           <td v-for="(val, i) in value" :key="'data-row-' + i">
             {{ val }}
           </td>
