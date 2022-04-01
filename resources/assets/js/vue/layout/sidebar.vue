@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import createCollectionModal from "../pages/dashboard/create-collection-modal";
+import createCollectionModal from "../pages/collection/modals/create-collection-modal";
 
 export default {
   components: {

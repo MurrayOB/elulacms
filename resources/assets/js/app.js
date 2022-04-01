@@ -4,27 +4,28 @@ window.axios = require("axios");
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
+// VUE APP
 import Vue from "vue";
 window.Vue = require("vue").default;
 
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-import vuetify from "./vuetify";
+import vuetify from "./vue/vuetify";
 
 //VUE COMPONENTS
-import app from "./components/app";
-import sidebar from "./components/layout/sidebar";
+import app from "./vue/app";
+import sidebar from "./vue/layout/sidebar";
 //pages
-import dashboard from "./components/pages/dashboard";
-import collection from "./components/pages/collection";
-import settings from "./components/pages/settings";
-import media from "./components/pages/media";
+import dashboard from "./vue/pages/dashboard";
+import collection from "./vue/pages/collection/collection";
+import settings from "./vue/pages/settings";
+import media from "./vue/pages/media";
 //dashboard Components
-import createCollectionModal from "./components/pages/dashboard/create-collection-modal";
-import editCollectionModal from "./components/pages/dashboard/edit-collection-modal";
-import addEntry from "./components/pages/add-entry";
-import editEntry from "./components/pages/edit-entry";
+import createCollectionModal from "./vue/pages/collection/modals/create-collection-modal";
+import editCollectionModal from "./vue/pages/collection/modals/edit-collection-modal";
+import addEntry from "./vue/pages/collection/add-entry";
+import editEntry from "./vue/pages/collection/edit-entry";
 
 const routes = [
   {
@@ -68,7 +69,7 @@ const router = new VueRouter({
 });
 
 import Vuex from "vuex";
-import storeData from "./store/globalStore";
+import storeData from "./vue/store/globalStore";
 Vue.use(Vuex);
 const store = new Vuex.Store(storeData);
 

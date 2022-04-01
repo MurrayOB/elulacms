@@ -2,7 +2,6 @@
 
 //FOCUS ONLY ON THE CMS FOR NOW (complete basic strapi capabilities)
 
-1. Add entry
 1. 2.Fix table rows and buttons
 1. 3. Table rows pagination
 1. Handle the image / images upload / field / media library
