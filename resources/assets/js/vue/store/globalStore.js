@@ -124,6 +124,22 @@ export default {
           console.log(err);
         });
     },
+    //PUBLISH ENTRY
+    async publishEntry({ dispatch }, { id, collectionName }) {
+      const data = {
+        id: id,
+        collectionName: collectionName,
+      };
+      axios
+        .post("/cms/publishEntry", data)
+        .then(function (res) {
+          console.log(res);
+          dispatch("fetchCollections");
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
   },
   mutations: {
     setCollections(state, collections) {

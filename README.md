@@ -2,15 +2,16 @@
 
 //FOCUS ONLY ON THE CMS FOR NOW (complete basic strapi capabilities)
 
-1. 2.Fix table rows and buttons
-1. 3. Table rows pagination
+1. Check all and uncheck all on table
 1. Handle the image / images upload / field / media library
 1. Allow when creating fields to choose nullable, required, default value
-
-1. Form validations and backend validations (VALIDATION)
+1. Form validations (FRONT END)
+1. backend validations (BACKEND)
 1. Handle authenticaion / auth settings (AUTHENTICATION)
-1. Add user roles to settings page
+1. Add user roles to settings page and creating users
+1. add other field types
 1. Caching
+1. 404 front end routes
 
 ## Future TO DOs:
 

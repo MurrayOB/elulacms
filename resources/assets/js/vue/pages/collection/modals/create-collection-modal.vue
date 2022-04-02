@@ -102,6 +102,7 @@
                     </v-col>
                     <v-col cols="12" md="1"
                       ><v-btn
+                        v-if="index !== 0"
                         color="red"
                         @click="removeField(index)"
                         class="mt-3"

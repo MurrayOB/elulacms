@@ -12,7 +12,7 @@
         <v-icon left>mdi-chevron-left</v-icon>back</v-btn
       >
     </v-col>
-    <h2 class="ml-4" v-if="!editEntry">
+    <h2 class="ml-4">
       <span class="font-weight-light">Add entry to</span> {{ name }}
     </h2>
     <br />
@@ -36,14 +36,12 @@
               <v-textarea
                 v-model="entry[index]"
                 outlined
-                name="input-7-4"
                 :label="value.name"
               ></v-textarea>
             </v-col>
           </v-row>
         </div>
         <v-checkbox
-          v-if="!editEntry"
           v-model="publish"
           label="publish"
           color="primary"
@@ -62,7 +60,6 @@ export default {
   data: () => ({
     entry: [],
     formValid: true,
-    editEntry: false,
     publish: false,
   }),
   methods: {
