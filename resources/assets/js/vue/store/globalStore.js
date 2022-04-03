@@ -1,9 +1,12 @@
 export default {
   state: {
+    user: "dsf",
     collections: [],
     collectionsLoaded: true,
   },
   getters: {
+    isAuthenticated: (state) => !!state.user,
+    user: (state) => state.user,
     getCollections: (state) => state.collections,
     getCollectionsLoaded: (state) => state.collectionsLoaded,
     singleCollection: (state, getters) => (name) => {
@@ -140,6 +143,26 @@ export default {
           console.log(err);
         });
     },
+    //UPLOAD MEDIA
+    async uploadFiles({ dispatch }, { files }) {
+      const data = {
+        files: "hello",
+      };
+      axios
+        .post("/cms/uploadMedia", data, {
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+        .then(function (res) {
+          console.log(res);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    },
+    //FETCH MEDIA
+    async fetchMedia({ commit }) {},
   },
   mutations: {
     setCollections(state, collections) {

@@ -2,8 +2,9 @@
 
 //FOCUS ONLY ON THE CMS FOR NOW (complete basic strapi capabilities)
 
-1. Check all and uncheck all on table
 1. Handle the image / images upload / field / media library
+1. Check all and uncheck all on table
+
 1. Allow when creating fields to choose nullable, required, default value
 1. Form validations (FRONT END)
 1. backend validations (BACKEND)

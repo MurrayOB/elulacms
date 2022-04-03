@@ -8,7 +8,18 @@ use Murrayobrien\Elulacms\Helpers\CollectionHelper;
 
 class ElulacmsCollectionController extends Controller {
 
-    
+    //Media
+    public function uploadMedia(Request $request){
+        //validate image
+        // $request->validate([
+        //     'files' => 'required|mimes:csv,txt,xlx,xls,pdf|max:2048'
+        // ]);
+         
+        $collectionHelper = new CollectionHelper(); 
+        return $collectionHelper->uploadMedia($request->files);
+    }
+
+    //Collections
     public function addCollection(Request $request){
         //Validation
         $request->validate([

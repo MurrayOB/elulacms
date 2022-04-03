@@ -14,6 +14,15 @@ use Murrayobrien\Elulacms\Helpers\Classes\FieldOptions;
 class CollectionHelper {
 
     /**
+     * Media
+     */
+    function uploadMedia($files){
+        return response()->json([
+            'files' => $files['name']
+        ]); 
+    }
+
+    /**
      * Collections: 
      */
     function createCollection(string $collectionName, $fieldArray){

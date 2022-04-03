@@ -11,12 +11,8 @@ Route::get('/cms', function () {
 });
 
 Route::get('/cms/login', function(){
-    return view('elulacms::auth/login')->with('cmsname', config('elulacms.cms.name')); 
+    return view('elulacms::layouts.master'); 
 }); 
-
-// Route::get('/cms/dashboard', function(){
-//     return view('elulacms::dashboard'); 
-// });
 
 Route::get('/cms/dashboard', function(){
     return view('elulacms::layouts.master'); 
@@ -37,10 +33,12 @@ Route::post('/cms/updateCollection', [ElulacmsCollectionController::class, 'upda
 
 //Entries: 
 Route::post('/cms/addEntry', [ElulacmsCollectionController::class, 'addEntry']); 
-// TO DO
 Route::post('/cms/deleteEntry', [ElulacmsCollectionController::class, 'deleteEntry']); 
 Route::post('/cms/publishEntry', [ElulacmsCollectionController::class, 'publishEntry']); 
 Route::post('/cms/updateEntry', [ElulacmsCollectionController::class, 'updateEntry']); 
+
+//Media:
+Route::post('/cms/uploadMedia', [ElulacmsCollectionController::class, 'uploadMedia']); 
 
 
 

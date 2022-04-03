@@ -1,6 +1,10 @@
 <template>
   <v-app>
-    <sidebar app v-bind:collections="collections"></sidebar>
+    <sidebar
+      v-if="isAuthenticated"
+      app
+      v-bind:collections="collections"
+    ></sidebar>
     <v-main>
       <v-container fluid>
         <router-view></router-view>
@@ -8,6 +12,7 @@
     </v-main>
     <!-- success snackbar -->
     <v-snackbar
+      v-if="isAuthenticated"
       :timeout="-1"
       absolute
       bottom
@@ -25,7 +30,7 @@
     </v-snackbar>
     <!-- error -->
     <v-alert
-      v-if="!collectionsLoaded"
+      v-if="!collectionsLoaded && isAuthenticated"
       color="red"
       dark
       dense
@@ -68,6 +73,9 @@ export default {
     },
     collectionsLoaded() {
       return this.$store.getters.getCollectionsLoaded;
+    },
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
     },
   },
   mounted() {

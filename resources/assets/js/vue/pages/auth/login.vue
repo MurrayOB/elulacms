@@ -1,14 +1,12 @@
 <template>
   <div>
-    <h1>Media</h1>
+    <h1>Login</h1>
   </div>
 </template>
 
 <script>
 export default {
-  data: () => ({
-    count: 0,
-  }),
+  data: () => ({}),
   methods: {},
 };
 </script>
